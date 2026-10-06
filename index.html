@@ -53,22 +53,57 @@ async function api(method,data={},requestId){
   const result=await formTransport({action:'workerMiniApp',initData:tg.initData,method,data,requestId});
   if(!result.ok)throw new Error(result.error||'Не удалось выполнить действие.');return result;
 }
-async function load(silent=false){const n=++sequence;try{if(!silent)note('Загружаю твои данные…');const r=await api('snapshot',{month:$('month').value||undefined});if(n!==sequence)return;state=r.data;render();if(!silent)note('');}catch(e){note(e.message,true);}}
+const pendingLoads=new Map();
+let activeTab='trips', verified=false, hoursFresh=false;
+const cacheKey=()=>{const id=tg?.initDataUnsafe?.user?.id;return id?'crew-mini-v2:'+location.origin+location.pathname+':'+id:null;};
+function savePreview(){try{const key=cacheKey();if(key&&state)localStorage.setItem(key,JSON.stringify({savedAt:Date.now(),data:state}));}catch(_){} }
+function restorePreview(){
+  try{const key=cacheKey(),raw=key&&localStorage.getItem(key);if(!raw)return false;const saved=JSON.parse(raw);
+    if(Date.now()-saved.savedAt>12*3600000||!saved.data||!Array.isArray(saved.data.trips)||!Array.isArray(saved.data.off))return false;
+    state=saved.data;render();return true;
+  }catch(_){return false;}
+}
+function load(silent=false){
+  const includeHours=activeTab==='hours',month=$('month').value||undefined;
+  const key=JSON.stringify([sequence,includeHours,month]);
+  if(pendingLoads.has(key))return pendingLoads.get(key);
+  const epoch=sequence;
+  const task=(async()=>{try{
+    if(!silent)note(state?'Обновляю данные…':'Загружаю твои данные…');
+    const r=await api('snapshot',{month,includeHours});
+    if(epoch!==sequence)return;
+    const previousHours=state?.hours;
+    state=r.data;if(!state.hours&&previousHours)state.hours=previousHours;
+    verified=true;if(includeHours)hoursFresh=!state.hours?.error;
+    render();savePreview();if(!silent)note('');
+  }catch(e){if(epoch!==sequence)return;if(!verified){try{const key=cacheKey();if(key)localStorage.removeItem(key);}catch(_){} }
+    note(e.message+(state?' Показаны последние данные.':''),true);
+  }finally{pendingLoads.delete(key);} })();
+  pendingLoads.set(key,task);return task;
+}
 function miniRequestId(){
   return Array.from(crypto.getRandomValues(new Uint8Array(32)),b=>b.toString(16).padStart(2,'0')).join('');
 }
 async function act(method,data){
-  if(busy)return;setBusy(true);
+  if(busy)return;
+  if(!verified){note('Дождись обновления данных с сервера.',true);return;}
+  if(['start','end','type'].includes(method)&&!hoursFresh){note('Обновляю часы — дождись загрузки.');load();return;}
+  sequence++;setBusy(true);
   try{
     const id=miniRequestId();note('Сохраняю…');
     const r=await api(method,data,id);
     if(r.response&&state){
       const trip=state.trips.find(t=>t.id===r.response.tripId);
-      if(trip){trip.status=r.response.status;trip.reason=r.response.reason;renderTrips();}
+      if(trip){trip.status=r.response.status;trip.reason=r.response.reason;renderTrips();savePreview();}
     }
     note(r.message);
     try{tg?.HapticFeedback?.notificationOccurred('success');}catch(_){}
-    await load(true);
+    // The server receipt already confirms a trip response or a delivered file.
+    if(!['respond','files'].includes(method)){
+      hoursFresh=false;
+      setBusy(false);
+      void load(true);
+    }
   }catch(e){note(e.message||'Не удалось сохранить. Обнови данные и повтори.',true);}
   finally{setBusy(false);}
 }
@@ -114,7 +149,9 @@ function renderTrips(){
   }
 }
 function renderHours(){
-  const h=state.hours,select=$('month');select.replaceChildren();for(const m of h.months)select.append(new Option(new Date(m+'-01T12:00:00Z').toLocaleDateString('ru-RU',{month:'long',year:'numeric'}),m));select.value=h.month;$('total').textContent=h.total;
+  const h=state.hours,select=$('month');
+  if(!h){$('total').textContent='—';$('clock').replaceChildren(text('p','Часы загрузятся при открытии этой вкладки.','empty'));$('shiftList').replaceChildren();return;}
+  select.replaceChildren();for(const m of h.months)select.append(new Option(new Date(m+'-01T12:00:00Z').toLocaleDateString('ru-RU',{month:'long',year:'numeric'}),m));select.value=h.month;$('total').textContent=h.total;
   const clock=$('clock');clock.replaceChildren();
   if(!h.ready){clock.append(text('p','Руководитель ещё не включил учёт часов.','empty'));}
   else{const card=text('div','','card');card.append(text('h2',h.open?'Записать окончание':'Записать начало'));
@@ -131,10 +168,10 @@ function renderHours(){
     if(!shift.type){const form=document.createElement('form');form.append(typeSelect(),text('button','Записать тип работы','secondary'));form.onsubmit=e=>{e.preventDefault();act('type',{shiftId:shift.id,type:form.elements.type.value});};card.append(form);}list.append(card);}
 }
 function renderOff(){const list=$('offList');list.replaceChildren();if(!state.off.length)list.append(text('p','Заявок на выходные пока нет.','empty'));for(const item of state.off){const card=text('article','','card');card.append(text('span',statuses[item.status]||item.status,'badge '+item.status),text('h3',offDate(item.from)+(item.to!==item.from?' — '+offDate(item.to):'')));if(item.note)card.append(text('p',item.note));list.append(card);}}
-$('past').onchange=()=>{if(state)renderTrips();};$('month').onchange=()=>load();$('refresh').onclick=()=>load();
+$('past').onchange=()=>{if(state)renderTrips();};$('month').onchange=()=>{sequence++;hoursFresh=false;load();};$('refresh').onclick=()=>{sequence++;hoursFresh=false;load();};
 $('offForm').onsubmit=e=>{e.preventDefault();const f=e.currentTarget;if(f.elements.to.value<f.elements.from.value){note('Окончание периода должно быть не раньше начала.',true);return;}act('off',Object.fromEntries(new FormData(f)));};
-document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{for(const id of ['trips','hours','off','help'])$(id).hidden=id!==b.dataset.tab;document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));window.scrollTo(0,0);});
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{activeTab=b.dataset.tab;if(activeTab==='hours'&&!hoursFresh)load();for(const id of ['trips','hours','off','help'])$(id).hidden=id!==b.dataset.tab;document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));window.scrollTo(0,0);});
 setupHomeScreen();
 if(tg){tg.ready();tg.expand();}
-if(tg?.initData)load();else{note('Открой «Моё приложение» из личного чата с ботом. В обычном браузере данные работников недоступны.',true);$('refresh').disabled=true;}
+if(tg?.initData){const restored=restorePreview();if(restored)note('Показаны последние данные. Обновляю…');load();}else{note('Открой «Моё приложение» из личного чата с ботом. В обычном браузере данные работников недоступны.',true);$('refresh').disabled=true;}
 </script></body></html>
