@@ -1,0 +1,104 @@
+<!doctype html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="referrer" content="no-referrer"><title>Моя команда</title><script src="https://telegram.org/js/telegram-web-app.js"></script><script src="./config.js"></script>
+<style>
+:root{color-scheme:light dark;--bg:var(--tg-theme-bg-color,#101923);--card:var(--tg-theme-secondary-bg-color,#1c2938);--text:var(--tg-theme-text-color,#f2f6fc);--muted:var(--tg-theme-hint-color,#a8b9cb);--accent:var(--tg-theme-button-color,#65c5df);--btntext:var(--tg-theme-button-text-color,#102434)}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,sans-serif}main{max-width:640px;margin:auto;padding:22px 16px calc(100px + env(safe-area-inset-bottom))}h1{font-size:27px;line-height:1.15;margin:8px 0}h2{font-size:21px;margin:0 0 12px}h3{font-size:18px;margin:0 0 10px}p{margin:8px 0;white-space:pre-wrap;overflow-wrap:anywhere}.muted,small{color:var(--muted)}.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:2px;color:var(--muted)}.top{display:flex;align-items:center;justify-content:space-between;gap:12px}.card{background:var(--card);border:1px solid color-mix(in srgb,var(--text) 10%,transparent);border-radius:18px;padding:18px;margin:14px 0}.trip{border-left:5px solid #58bcde}.trip.stage{border-left-color:#e6a176}.trip.both{border-left-color:#ad8de3}.badge{display:inline-block;padding:4px 10px;border-radius:20px;font-size:13px;background:color-mix(in srgb,var(--accent) 15%,transparent)}.accepted,.approved{color:#48b984}.declined,.rejected{color:#e57c87}.pending{color:#d2a95c}.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1;min-width:120px}button,input,select,textarea{font:inherit;border-radius:11px}button{cursor:pointer;background:var(--accent);color:var(--btntext);border:0;padding:12px 15px;font-weight:650;min-height:46px}.secondary{background:color-mix(in srgb,var(--text) 9%,transparent);color:var(--text)}.danger{background:#a84653;color:#fff}button:disabled{opacity:.55;cursor:wait}label{display:block;margin:12px 0;font-size:14px;color:var(--muted)}input,select,textarea{display:block;width:100%;min-height:46px;margin-top:5px;background:var(--bg);border:1px solid color-mix(in srgb,var(--text) 18%,transparent);padding:10px;color:var(--text)}input[type=checkbox]{width:20px;min-height:20px;display:inline;vertical-align:middle;margin-right:8px}textarea{resize:vertical;min-height:85px}.status{padding:12px 15px;margin:12px 0;border-radius:11px;background:color-mix(in srgb,var(--accent) 12%,transparent);white-space:pre-wrap;overflow-wrap:anywhere}.status.error{background:color-mix(in srgb,#e57c87 18%,transparent)}#status:empty{display:none}.big{font-size:36px;font-weight:750;letter-spacing:-1px}.nav{position:fixed;bottom:0;left:0;right:0;display:grid;grid-template-columns:repeat(4,1fr);gap:5px;background:var(--card);padding:10px 10px calc(10px + env(safe-area-inset-bottom));border-top:1px solid color-mix(in srgb,var(--text) 12%,transparent);z-index:2}.nav button{background:transparent;color:var(--muted);padding:7px 2px;min-width:0;font-size:12px}.nav button.active{background:color-mix(in srgb,var(--accent) 15%,transparent);color:var(--accent)}.nav b{display:block;font-size:19px}.file{display:block;width:100%;margin:8px 0;text-align:left}.empty{padding:25px 10px;text-align:center;color:var(--muted)}[hidden]{display:none!important}.notice{font-size:13px;color:var(--muted)}details summary{cursor:pointer;font-weight:650}details form{margin-top:12px}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:3px}@media(prefers-reduced-motion:no-preference){button{transition:opacity .15s}}@media(max-width:350px){main{padding-inline:10px}.row>*{min-width:110px}h1{font-size:24px}}
+</style></head><body><main>
+<div class="top"><div><div class="eyebrow">LED · моя команда</div><h1 id="name">Моё приложение</h1></div><button id="refresh" class="secondary" aria-label="Обновить">↻</button></div>
+<p class="notice">Даты и время — по Израилю</p><div id="status" class="status" role="status" aria-live="polite"></div>
+<section id="trips"><div class="card"><h2>Мои выезды</h2><label><input id="past" type="checkbox">Показывать прошедшие выезды</label></div><div id="tripList"></div></section>
+<section id="hours" hidden><div class="card"><h2>Часы работы</h2><label>Месяц<select id="month"></select></label><div class="big" id="total">—</div><small>Завершённые смены за выбранный месяц</small><p class="notice">Ночная смена целиком учитывается в месяце начала.</p></div><div id="clock"></div><div id="shiftList"></div></section>
+<section id="off" hidden><div class="card"><h2>Попросить выходной</h2><form id="offForm"><div class="row"><label>С даты<input name="from" type="date" required></label><label>По дату<input name="to" type="date" required></label></div><label>Пожелание или причина<textarea name="note" maxlength="200" placeholder="Необязательно"></textarea></label><button type="submit">Отправить руководителю</button><p class="notice">Выходной разрешён только после подтверждения руководителя.</p></form></div><div id="offList"></div></section>
+<section id="help" hidden><div class="card"><h2>Как пользоваться</h2><p>📅 Выезды — твои работы, адрес, машина, команда и файлы. Подтверди участие или укажи причину отказа. Кнопка файла отправит его в личный чат бота.</p><p>⏱ Часы — введи фактические дату и время начала. После работы запиши окончание и выбери: экраны, сцена или оба варианта. Часы сохраняются в том же журнале Google Таблиц.</p><p>🌿 Выходные — отправь одну дату или период. Здесь будет видно решение руководителя.</p><p>Команды бота тоже работают:
+/my — выезды и файлы
+/startwork — записать начало
+/endwork — записать окончание
+/hours — часы за месяц
+/off — заявка на выходной
+/help — инструкция
+/app — открыть это приложение</p><p class="notice">Пример ручной записи: /startwork 06.10.26 08:00. Исправление и удаление часов делает руководитель. Если смена не записалась, обнови данные и сообщи ему.</p></div></section>
+</main><nav class="nav" aria-label="Разделы"><button data-tab="trips" class="active"><b>📅</b>Выезды</button><button data-tab="hours"><b>⏱</b>Часы</button><button data-tab="off"><b>🌿</b>Выходные</button><button data-tab="help"><b>?</b>Помощь</button></nav>
+<script>
+'use strict';
+const tg=window.Telegram?.WebApp, $=id=>document.getElementById(id);
+let state=null,busy=false,sequence=0;
+const types={screen:'Экраны',stage:'Сцена',both:'Сцена и экраны'};
+const statuses={accepted:'✅ Подтверждено',declined:'❌ Отказ',pending:'🕓 Ожидает решения',approved:'✅ Разрешено',rejected:'❌ Отклонено'};
+const text=(tag,value,cls='')=>{const n=document.createElement(tag);n.textContent=value;n.className=cls;return n;};
+const date=value=>new Date(value).toLocaleString('ru-RU',{timeZone:'Asia/Jerusalem',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+const offDate=value=>value.split('-').reverse().join('.');
+function note(message,error=false){$('status').textContent=message;$('status').classList.toggle('error',error);}
+function setBusy(value){busy=value;document.querySelectorAll('button').forEach(b=>b.disabled=value);}
+function formTransport(request){
+  return new Promise((resolve,reject)=>{
+    const endpoint=window.CREW_MINI_CONFIG?.gasUrl||'';
+    if(!/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(endpoint)){reject(new Error('В config.js не указан публичный Apps Script /exec.'));return;}
+    const bytes=crypto.getRandomValues(new Uint8Array(32));
+    const nonce=Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join('');
+    const iframe=document.createElement('iframe'),form=document.createElement('form'),field=document.createElement('input');
+    iframe.name='crew_'+nonce;iframe.title='Ответ сервера';iframe.hidden=true;
+    form.method='POST';form.action=endpoint;form.target=iframe.name;form.hidden=true;form.acceptCharset='UTF-8';
+    field.type='hidden';field.name='worker_payload';field.value=JSON.stringify({...request,transportNonce:nonce,clientOrigin:location.origin});form.append(field);
+    const clean=()=>{clearTimeout(timer);window.removeEventListener('message',receive);iframe.remove();form.remove();};
+    const receive=event=>{
+      if(!/^https:\/\/(?:[a-z0-9-]+\.)*googleusercontent\.com$/.test(event.origin))return;
+      const packet=event.data;
+      if(!packet||packet.channel!=='crew-mini-response'||packet.nonce!==nonce)return;
+      clean();resolve(packet.result);
+    };
+    const timer=setTimeout(()=>{clean();reject(new Error('Сервер не ответил. Проверь интернет и публичное развёртывание. Обнови данные перед повторной записью.'));},90000);
+    window.addEventListener('message',receive);document.body.append(iframe,form);form.submit();
+  });
+}
+async function api(method,data={},requestId){
+  if(!tg?.initData)throw new Error('Открой приложение кнопкой внутри Telegram.');
+  const result=await formTransport({action:'workerMiniApp',initData:tg.initData,method,data,requestId});
+  if(!result.ok)throw new Error(result.error||'Не удалось выполнить действие.');return result;
+}
+async function load(silent=false){const n=++sequence;try{if(!silent)note('Загружаю твои данные…');const r=await api('snapshot',{month:$('month').value||undefined});if(n!==sequence)return;state=r.data;render();if(!silent)note('');}catch(e){note(e.message,true);}}
+async function act(method,data){if(busy)return;setBusy(true);const id=crypto.randomUUID();try{note('Сохраняю…');const r=await api(method,data,id);note(r.message);tg?.HapticFeedback?.notificationOccurred('success');await load(true);}catch(e){note(e.message,true);await load(true);}finally{setBusy(false);}}
+function typeSelect(){const select=document.createElement('select');select.name='type';select.required=true;select.append(new Option('Выбери тип работы',''));for(const [key,value] of Object.entries(types))select.append(new Option(value,key));return select;}
+function button(label,fn,cls='secondary'){const b=text('button',label,cls);b.type='button';b.onclick=fn;return b;}
+function render(){
+  $('name').textContent=state.name;
+  renderTrips();renderHours();renderOff();
+  for(const field of ['from','to']){const input=$('offForm').elements[field];input.min=state.today;if(!input.value)input.value=state.today;}
+  if(busy)setBusy(true);
+}
+function renderTrips(){
+  const list=$('tripList');list.replaceChildren();const rows=state.trips.filter(t=>$('past').checked||t.date>=state.today);
+  if(!rows.length){list.append(text('p','Пока нет назначенных выездов.','empty'));return;}
+  for(const trip of rows){const card=text('article','','card trip '+(trip.types.length===2?'both':trip.types[0]));
+    card.append(text('span',statuses[trip.status]||statuses.pending,'badge '+trip.status),text('h3',trip.title),text('p',trip.when),text('p','📍 '+trip.location),text('p','🚐 '+trip.car),text('p','🎭 '+trip.types.map(t=>types[t]).join(' + ')));
+    if(trip.names.length)card.append(text('p','Команда: '+trip.names.join(', '),'muted'));
+    if(trip.notes)card.append(text('p',trip.notes));if(trip.schemeList)card.append(text('p','Список: '+trip.schemeList));
+    if(trip.reason)card.append(text('p','Причина отказа: '+trip.reason,'muted'));
+    if(trip.date>=state.today){const row=text('div','','row');row.append(button('✅ Подтвердить',()=>act('respond',{tripId:trip.id,version:trip.version,status:'accepted'}),''));
+      const detail=document.createElement('details');detail.append(text('summary','❌ Не могу'));
+      const form=document.createElement('form'),label=text('label','Причина отказа'),reason=document.createElement('textarea');reason.required=true;reason.maxLength=500;label.append(reason);form.append(label,text('button','Сохранить отказ','danger'));form.onsubmit=e=>{e.preventDefault();act('respond',{tripId:trip.id,version:trip.version,status:'declined',reason:reason.value});};detail.append(form);card.append(row,detail);}
+    if(trip.attachments.length){card.append(text('p','Файлы — получить в Telegram','muted'));trip.attachments.forEach((f,index)=>card.append(button('📎 '+f.name,()=>act('files',{tripId:trip.id,version:trip.version,index}),'secondary file')));}
+    list.append(card);
+  }
+}
+function renderHours(){
+  const h=state.hours,select=$('month');select.replaceChildren();for(const m of h.months)select.append(new Option(new Date(m+'-01T12:00:00Z').toLocaleDateString('ru-RU',{month:'long',year:'numeric'}),m));select.value=h.month;$('total').textContent=h.total;
+  const clock=$('clock');clock.replaceChildren();
+  if(!h.ready){clock.append(text('p','Руководитель ещё не включил учёт часов.','empty'));}
+  else{const card=text('div','','card');card.append(text('h2',h.open?'Записать окончание':'Записать начало'));
+    if(h.open)card.append(text('p','Начало: '+date(h.open.startedAt),'muted'));
+    card.append(text('p','Укажи фактические дату и время. Автоматического таймера нет.','notice'));
+    const form=document.createElement('form');form.innerHTML='<div class="row"><label>Дата<input name="date" type="date" required></label><label>Время<input name="time" type="time" required></label></div>';
+    form.elements.date.value=state.today;form.elements.date.max=state.today;
+    if(h.open){const label=text('label','Где работал');label.append(typeSelect());form.append(label);}
+    form.append(text('button',h.open?'Сохранить окончание':'Сохранить начало'));form.onsubmit=e=>{e.preventDefault();act(h.open?'end':'start',{date:form.elements.date.value,time:form.elements.time.value,openId:h.open?.id,type:form.elements.type?.value});};card.append(form);clock.append(card);
+  }
+  if(h.error)clock.append(text('p',h.error,'status error'));
+  const list=$('shiftList');list.replaceChildren();if(!h.shifts.length)list.append(text('p','За выбранный месяц завершённых смен нет.','empty'));
+  for(const shift of h.shifts){const card=text('article','','card');card.append(text('h3',shift.hours),text('p','Начало: '+date(shift.start)),text('p','Окончание: '+date(shift.end)),text('p',types[shift.type]||'Тип работы пока не указан','muted'));
+    if(!shift.type){const form=document.createElement('form');form.append(typeSelect(),text('button','Записать тип работы','secondary'));form.onsubmit=e=>{e.preventDefault();act('type',{shiftId:shift.id,type:form.elements.type.value});};card.append(form);}list.append(card);}
+}
+function renderOff(){const list=$('offList');list.replaceChildren();if(!state.off.length)list.append(text('p','Заявок на выходные пока нет.','empty'));for(const item of state.off){const card=text('article','','card');card.append(text('span',statuses[item.status]||item.status,'badge '+item.status),text('h3',offDate(item.from)+(item.to!==item.from?' — '+offDate(item.to):'')));if(item.note)card.append(text('p',item.note));list.append(card);}}
+$('past').onchange=()=>{if(state)renderTrips();};$('month').onchange=()=>load();$('refresh').onclick=()=>load();
+$('offForm').onsubmit=e=>{e.preventDefault();const f=e.currentTarget;if(f.elements.to.value<f.elements.from.value){note('Окончание периода должно быть не раньше начала.',true);return;}act('off',Object.fromEntries(new FormData(f)));};
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{for(const id of ['trips','hours','off','help'])$(id).hidden=id!==b.dataset.tab;document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));window.scrollTo(0,0);});
+if(tg){tg.ready();tg.expand();}
+if(tg?.initData)load();else{note('Открой «Моё приложение» из личного чата с ботом. В обычном браузере данные работников недоступны.',true);$('refresh').disabled=true;}
+</script></body></html>
