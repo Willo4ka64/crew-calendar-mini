@@ -19,7 +19,7 @@
 /help — инструкция
 /app — открыть это приложение</p><p class="notice">Пример ручной записи: /startwork 06.10.26 08:00. Исправление и удаление часов делает руководитель. Если смена не записалась, обнови данные и сообщи ему.</p></div></section>
 </main><nav class="nav" style="grid-template-columns:repeat(5,1fr)" aria-label="Разделы"><button data-tab="home" class="active"><b>⌂</b>Главная</button><button data-tab="trips"><b>📅</b>Выезды</button><button data-tab="hours"><b>⏱</b>Часы</button><button data-tab="off"><b>🌿</b>Выходные</button><button data-tab="help"><b>?</b>Помощь</button></nav>
-<section id="fileViewer" class="file-viewer" role="dialog" aria-modal="true" aria-labelledby="viewerTitle" tabindex="-1" hidden><div class="viewer-header"><h2 id="viewerTitle">Просмотр файла</h2><button type="button" id="viewerClose" class="secondary">Закрыть</button></div><p id="viewerStatus" class="notice" role="status" aria-live="polite"></p><div class="viewer-tools"><button type="button" id="viewerPrev" class="secondary" hidden>← Страница</button><span id="viewerPage"></span><button type="button" id="viewerNext" class="secondary" hidden>Страница →</button><button type="button" id="viewerMinus" class="secondary" hidden aria-label="Уменьшить">−</button><button type="button" id="viewerPlus" class="secondary" hidden aria-label="Увеличить">＋</button><button type="button" id="viewerFit" class="secondary" hidden>По ширине</button><button type="button" id="viewerSend" class="secondary">Отправить в Telegram</button></div><div id="viewerContent" class="viewer-content"></div></section>
+<section id="fileViewer" class="file-viewer" role="dialog" aria-modal="true" aria-labelledby="viewerTitle" tabindex="-1" hidden><div class="viewer-header"><h2 id="viewerTitle">Просмотр файла</h2><button type="button" id="viewerClose" class="secondary">Закрыть</button></div><p id="viewerStatus" class="notice" role="status" aria-live="polite"></p><div class="viewer-tools"><button type="button" id="viewerPrev" class="secondary" hidden>← Страница</button><span id="viewerPage"></span><button type="button" id="viewerNext" class="secondary" hidden>Страница →</button><button type="button" id="viewerMinus" class="secondary" hidden aria-label="Уменьшить">−</button><button type="button" id="viewerPlus" class="secondary" hidden aria-label="Увеличить">＋</button><button type="button" id="viewerFit" class="secondary" hidden>По ширине</button><button type="button" id="viewerSend" class="secondary">Отправить в Telegram</button></div><div class="viewer-tools"><button type="button" id="viewerFilePrev" class="secondary" hidden>← Предыдущий файл</button><span id="viewerFileCount" class="notice"></span><button type="button" id="viewerFileNext" class="secondary" hidden>Следующий файл →</button></div><div id="viewerContent" class="viewer-content"></div></section>
 <script>
 'use strict';
 const tg=window.Telegram?.WebApp, $=id=>document.getElementById(id);
@@ -135,7 +135,10 @@ function setupHomeScreen(){
 
 function typeSelect(){const select=document.createElement('select');select.name='type';select.required=true;select.append(new Option('Выбери тип работы',''));for(const [key,value] of Object.entries(types))select.append(new Option(value,key));return select;}
 function button(label,fn,cls='secondary'){const b=text('button',label,cls);b.type='button';b.onclick=fn;return b;}
-let viewerEpoch=0,viewerTrip=null,viewerObjectUrl=null,viewerPdfTask=null,viewerPdf=null,viewerRender=null,viewerPage=1,viewerZoom=1,viewerKind='',viewerFocus=null,viewerOverflow='',viewerRendering=false;
+let viewerEpoch=0,viewerTrip=null,viewerObjectUrl=null,viewerPdfTask=null,viewerPdf=null,viewerRender=null,viewerPage=1,viewerZoom=1,viewerKind='',viewerFocus=null,viewerOverflow='',viewerRendering=false,viewerGroup=null;
+function isExcelFile(file){return /\.(xlsx?|xlsm|xlsb|xltx?|xltm)$/i.test(file.name||'')||/^(application\/vnd\.ms-excel|application\/vnd\.openxmlformats-officedocument\.spreadsheetml\.|application\/vnd\.ms-excel\.)/i.test(file.mimeType||'');}
+function previewTripFiles(trip){const indices=trip.attachments.map((file,index)=>isExcelFile(file)?-1:index).filter(index=>index>=0);if(indices.length)void previewTripFile(trip,indices[0],{trip,indices});}
+function switchViewerFile(direction){if(!viewerGroup||busy)return;const group=viewerGroup,pos=group.indices.indexOf(viewerTrip.index),index=group.indices[pos+direction];if(index!==undefined)void previewTripFile(group.trip,index,group);}
 function clearViewerResources(){
   viewerRender?.cancel();viewerRender=null;
   if(viewerPdfTask){try{void viewerPdfTask.destroy().catch(()=>{});}catch(_){}viewerPdfTask=null;}
@@ -144,11 +147,14 @@ function clearViewerResources(){
   $('viewerContent').replaceChildren();viewerRendering=false;
 }
 function closeFileViewer(){
-  viewerEpoch++;clearViewerResources();viewerTrip=null;viewerKind='';$('fileViewer').hidden=true;
+  viewerEpoch++;clearViewerResources();viewerTrip=null;viewerGroup=null;viewerKind='';$('fileViewer').hidden=true;
   document.body.style.overflow=viewerOverflow;try{tg?.BackButton?.hide();}catch(_){}
   viewerFocus?.focus?.();
 }
 function viewerControls(){
+  const pos=viewerGroup?viewerGroup.indices.indexOf(viewerTrip.index):0,count=viewerGroup?.indices.length||0;
+  $('viewerFilePrev').hidden=count<2;$('viewerFileNext').hidden=count<2;$('viewerFileCount').hidden=!count;
+  $('viewerFilePrev').disabled=pos<=0;$('viewerFileNext').disabled=pos>=count-1;$('viewerFileCount').textContent=count?'Файл '+(pos+1)+' из '+count:'';
   const pdf=viewerKind==='pdf'&&Boolean(viewerPdf),zoom=viewerKind==='image'||pdf;
   for(const id of ['viewerMinus','viewerPlus','viewerFit'])$(id).hidden=!zoom;
   $('viewerPrev').hidden=!pdf;$('viewerNext').hidden=!pdf;
@@ -175,11 +181,11 @@ function zoomViewer(change){
   if(viewerKind==='pdf')void renderViewerPdf();
   else {const img=$('viewerContent').querySelector('img');if(img)img.style.width=(viewerZoom*100)+'%';$('viewerStatus').textContent='Изображение · '+Math.round(viewerZoom*100)+'%';}
 }
-async function previewTripFile(trip,index){
+async function previewTripFile(trip,index,group=null){
   if(!verified||busy){note('Дождись обновления данных.',true);return;}
   if(!$('fileViewer').hidden)closeFileViewer();
   const epoch=++viewerEpoch;clearViewerResources();viewerFocus=document.activeElement;viewerOverflow=document.body.style.overflow;document.body.style.overflow='hidden';
-  viewerTrip={tripId:trip.id,version:trip.version,index};viewerPage=1;viewerZoom=1;viewerKind='';
+  viewerTrip={tripId:trip.id,version:trip.version,index};viewerGroup=group;viewerPage=1;viewerZoom=1;viewerKind='';
   $('fileViewer').hidden=false;$('viewerTitle').textContent=trip.attachments[index]?.name||'Файл';$('viewerStatus').textContent='Загружаю файл…';$('fileViewer').focus();viewerControls();try{tg?.BackButton?.show();}catch(_){}
   try{
     const r=await api('previewFile',viewerTrip);if(epoch!==viewerEpoch)return;
@@ -241,7 +247,12 @@ function renderTrips(target){
     if(trip.date>=state.today){const row=text('div','','row');row.append(button('✅ Подтвердить',()=>act('respond',{tripId:trip.id,version:trip.version,status:'accepted'}),''));
       const detail=document.createElement('details');detail.append(text('summary','❌ Не могу'));
       const form=document.createElement('form'),label=text('label','Причина отказа'),reason=document.createElement('textarea');reason.required=true;reason.maxLength=500;label.append(reason);form.append(label,text('button','Сохранить отказ','danger'));form.onsubmit=e=>{e.preventDefault();act('respond',{tripId:trip.id,version:trip.version,status:'declined',reason:reason.value});};detail.append(form);card.append(row,detail);}
-    if(trip.attachments.length){card.append(text('p','Файлы и схемы','muted'));trip.attachments.forEach((f,index)=>{const box=text('div','','card');box.append(text('p','📎 '+f.name));const row=text('div','','row');row.append(button('Просмотреть',()=>previewTripFile(trip,index),''),button('В Telegram',()=>act('files',{tripId:trip.id,version:trip.version,index})));box.append(row);card.append(box);});}
+    if(trip.attachments.length){
+      card.append(text('p','Файлы и схемы','muted'));
+      const count=trip.attachments.filter(f=>!isExcelFile(f)).length;
+      if(count){card.append(button('Посмотреть',()=>previewTripFiles(trip),''),text('p','Файлов в просмотре: '+count,'notice'));}
+      trip.attachments.forEach((f,index)=>{if(!isExcelFile(f))return;const box=text('div','','card');box.append(text('p','📊 '+f.name),button('Получить Excel в Telegram',()=>act('files',{tripId:trip.id,version:trip.version,index})));card.append(box);});
+    }
     list.append(card);
   }
 }
@@ -273,6 +284,7 @@ $('homeLoadHours').onclick=()=>{homeHoursRequested=true;sequence++;load();};
 $('viewerClose').onclick=closeFileViewer;$('viewerPlus').onclick=()=>zoomViewer(1.25);$('viewerMinus').onclick=()=>zoomViewer(0.8);$('viewerFit').onclick=()=>zoomViewer('fit');
 $('viewerPrev').onclick=()=>{if(viewerRendering||viewerPage<=1)return;viewerPage--;void renderViewerPdf();};$('viewerNext').onclick=()=>{if(viewerRendering||!viewerPdf||viewerPage>=viewerPdf.numPages)return;viewerPage++;void renderViewerPdf();};
 $('viewerSend').onclick=()=>{if(viewerTrip)void act('files',{...viewerTrip});};
+$('viewerFilePrev').onclick=()=>switchViewerFile(-1);$('viewerFileNext').onclick=()=>switchViewerFile(1);
 document.addEventListener('keydown',e=>{
   if($('fileViewer').hidden)return;
   if(e.key==='Escape'){e.preventDefault();closeFileViewer();return;}
