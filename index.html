@@ -1,11 +1,13 @@
 <!doctype html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="referrer" content="no-referrer"><title>Моя команда</title><script src="https://telegram.org/js/telegram-web-app.js"></script><script src="./config.js"></script>
 <style>
 :root{color-scheme:light dark;--bg:var(--tg-theme-bg-color,#101923);--card:var(--tg-theme-secondary-bg-color,#1c2938);--text:var(--tg-theme-text-color,#f2f6fc);--muted:var(--tg-theme-hint-color,#a8b9cb);--accent:var(--tg-theme-button-color,#65c5df);--btntext:var(--tg-theme-button-text-color,#102434)}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,sans-serif}main{max-width:640px;margin:auto;padding:22px 16px calc(100px + env(safe-area-inset-bottom))}h1{font-size:27px;line-height:1.15;margin:8px 0}h2{font-size:21px;margin:0 0 12px}h3{font-size:18px;margin:0 0 10px}p{margin:8px 0;white-space:pre-wrap;overflow-wrap:anywhere}.muted,small{color:var(--muted)}.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:2px;color:var(--muted)}.top{display:flex;align-items:center;justify-content:space-between;gap:12px}.card{background:var(--card);border:1px solid color-mix(in srgb,var(--text) 10%,transparent);border-radius:18px;padding:18px;margin:14px 0}.trip{border-left:5px solid #58bcde}.trip.stage{border-left-color:#e6a176}.trip.both{border-left-color:#ad8de3}.badge{display:inline-block;padding:4px 10px;border-radius:20px;font-size:13px;background:color-mix(in srgb,var(--accent) 15%,transparent)}.accepted,.approved{color:#48b984}.declined,.rejected{color:#e57c87}.pending{color:#d2a95c}.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1;min-width:120px}button,input,select,textarea{font:inherit;border-radius:11px}button{cursor:pointer;background:var(--accent);color:var(--btntext);border:0;padding:12px 15px;font-weight:650;min-height:46px}.secondary{background:color-mix(in srgb,var(--text) 9%,transparent);color:var(--text)}.danger{background:#a84653;color:#fff}button:disabled{opacity:.55;cursor:wait}label{display:block;margin:12px 0;font-size:14px;color:var(--muted)}input,select,textarea{display:block;width:100%;min-height:46px;margin-top:5px;background:var(--bg);border:1px solid color-mix(in srgb,var(--text) 18%,transparent);padding:10px;color:var(--text)}input[type=checkbox]{width:20px;min-height:20px;display:inline;vertical-align:middle;margin-right:8px}textarea{resize:vertical;min-height:85px}.status{padding:12px 15px;margin:12px 0;border-radius:11px;background:color-mix(in srgb,var(--accent) 12%,transparent);white-space:pre-wrap;overflow-wrap:anywhere}.status.error{background:color-mix(in srgb,#e57c87 18%,transparent)}#status:empty{display:none}.big{font-size:36px;font-weight:750;letter-spacing:-1px}.nav{position:fixed;bottom:0;left:0;right:0;display:grid;grid-template-columns:repeat(4,1fr);gap:5px;background:var(--card);padding:10px 10px calc(10px + env(safe-area-inset-bottom));border-top:1px solid color-mix(in srgb,var(--text) 12%,transparent);z-index:2}.nav button{background:transparent;color:var(--muted);padding:7px 2px;min-width:0;font-size:12px}.nav button.active{background:color-mix(in srgb,var(--accent) 15%,transparent);color:var(--accent)}.nav b{display:block;font-size:19px}.file{display:block;width:100%;margin:8px 0;text-align:left}.empty{padding:25px 10px;text-align:center;color:var(--muted)}[hidden]{display:none!important}.notice{font-size:13px;color:var(--muted)}details summary{cursor:pointer;font-weight:650}details form{margin-top:12px}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:3px}@media(prefers-reduced-motion:no-preference){button{transition:opacity .15s}}@media(max-width:350px){main{padding-inline:10px}.row>*{min-width:110px}h1{font-size:24px}}
+
+.language-heading{display:flex;justify-content:space-between;align-items:center;gap:12px}.language-picker{display:flex;align-items:center;gap:5px;margin:0 8px 0 0;flex:none;color:inherit}.language-picker select{display:inline-block;width:auto;max-width:148px;min-height:42px;margin:0;padding:8px;font-size:14px;border-radius:10px}.language-heading h1{margin-right:auto;min-width:0}.top>div{min-width:0;flex:1}.top h1{overflow-wrap:anywhere}@media print{.language-picker{display:none!important}}
 </style><style>
 .file-viewer{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;background:var(--bg);padding:calc(12px + env(safe-area-inset-top)) 12px calc(12px + env(safe-area-inset-bottom))}.viewer-header{display:flex;align-items:center;justify-content:space-between;gap:12px}.viewer-header h2{font-size:17px;overflow-wrap:anywhere;margin:0}.viewer-tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:10px 0}.viewer-tools button{min-height:40px;padding:8px 12px}.viewer-content{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;touch-action:auto;background:#263341;border-radius:12px;padding:8px}.viewer-content img{display:block;width:100%;height:auto;max-width:none;background:white}.viewer-content canvas{display:block;background:white}.viewer-content pre{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--card);color:var(--text);padding:12px;margin:0;font:14px/1.5 monospace}
 .gallery-file{background:var(--card);border-radius:12px;padding:12px;margin:0 0 16px}.gallery-file h3{font-size:14px;overflow-wrap:anywhere;margin:0}.gallery-file-content{overflow:auto;touch-action:auto}.gallery-file-content img{height:auto}.gallery-file:last-child{margin-bottom:0}
 </style></head><body><main>
-<div class="top"><div><div class="eyebrow">LED · моя команда</div><h1 id="name">Моё приложение</h1></div><button id="refresh" class="secondary" aria-label="Обновить">↻</button></div>
+<div class="top"><div><div class="eyebrow">LED · моя команда</div><h1 id="name">Моё приложение</h1></div><label class="language-picker" data-language-picker><span aria-hidden="true">🌐</span><select aria-label="Язык интерфейса"><option value="ru">RU · Русский</option><option value="en">EN · English</option></select></label><button id="refresh" class="secondary" aria-label="Обновить">↻</button></div>
 <p class="notice">Даты и время — по Израилю</p><button id="addHome" class="secondary" type="button">＋ Добавить на экран «Домой»</button><p id="homeStatus" class="notice" role="status" aria-live="polite"></p><div id="status" class="status" role="status" aria-live="polite"></div>
 <section id="home"><div class="card"><h2>Сегодня и ближайшая работа</h2><div id="homeSummary"></div><button type="button" id="homeLoadHours" class="secondary">Обновить итог часов</button><div id="homeOff"></div></div><div id="homeTrip"></div></section>
 <section id="trips" hidden><div class="card"><h2>Мои выезды</h2><label><input id="past" type="checkbox">Показывать прошедшие выезды</label></div><div id="tripList"></div></section>
@@ -21,25 +23,143 @@
 /app — открыть это приложение</p><p class="notice">Пример ручной записи: /startwork 06.10.26 08:00. Исправление и удаление часов делает руководитель. Если смена не записалась, обнови данные и сообщи ему.</p></div></section>
 </main><nav class="nav" style="grid-template-columns:repeat(5,1fr)" aria-label="Разделы"><button data-tab="home" class="active"><b>⌂</b>Главная</button><button data-tab="trips"><b>📅</b>Выезды</button><button data-tab="hours"><b>⏱</b>Часы</button><button data-tab="off"><b>🌿</b>Выходные</button><button data-tab="help"><b>?</b>Помощь</button></nav>
 <section id="fileViewer" class="file-viewer" role="dialog" aria-modal="true" aria-labelledby="viewerTitle" tabindex="-1" hidden><div class="viewer-header"><h2 id="viewerTitle">Просмотр файла</h2><button type="button" id="viewerClose" class="secondary">Закрыть</button></div><p id="viewerStatus" class="notice" role="status" aria-live="polite"></p><div class="viewer-tools"><button type="button" id="viewerPrev" class="secondary" hidden>← Страница</button><span id="viewerPage"></span><button type="button" id="viewerNext" class="secondary" hidden>Страница →</button><button type="button" id="viewerMinus" class="secondary" hidden aria-label="Уменьшить">−</button><button type="button" id="viewerPlus" class="secondary" hidden aria-label="Увеличить">＋</button><button type="button" id="viewerFit" class="secondary" hidden>По ширине</button><button type="button" id="viewerSend" class="secondary">Отправить в Telegram</button></div><div class="viewer-tools"><button type="button" id="viewerFilePrev" class="secondary" hidden>← Предыдущий файл</button><span id="viewerFileCount" class="notice"></span><button type="button" id="viewerFileNext" class="secondary" hidden>Следующий файл →</button></div><div id="viewerContent" class="viewer-content"></div></section>
+<script>/* UI-only localization. Data values are never looked up or rewritten. */
+window.CrewI18n = (() => {
+  const dictionary = {"Моя команда":"My team","LED · моя команда":"LED · my team","Моё приложение":"My app","Обновить":"Refresh","Даты и время — по Израилю":"Dates and times are in Israel time","＋ Добавить на экран «Домой»":"＋ Add to Home Screen","Сегодня и ближайшая работа":"Today and next job","Обновить итог часов":"Refresh hours total","Мои выезды":"My jobs","Показывать прошедшие выезды":"Show past jobs","Часы работы":"Work hours","Месяц":"Month","Завершённые смены за выбранный месяц":"Completed shifts in the selected month","Ночная смена целиком учитывается в месяце начала.":"An overnight shift is counted entirely in the month it started.","Попросить выходной":"Request time off","С даты":"From date","По дату":"To date","Пожелание или причина":"Request or reason","Необязательно":"Optional","Отправить руководителю":"Send to manager","Выходной разрешён только после подтверждения руководителя.":"Time off is approved only after the manager confirms your request.","Как пользоваться":"How to use","⌂ Главная — ближайший выезд, карта, подтверждение, файлы, месячный итог часов и последняя заявка.":"⌂ Home — next job, map, confirmation, files, monthly hours and latest request.","📅 Выезды — твои работы, адрес, машина, команда и файлы. Подтверди участие или укажи причину отказа. Кнопка файла отправит его в личный чат бота.":"📅 Jobs — your jobs, address, vehicle, team and files. Confirm attendance or give a reason for declining. Send files to your private bot chat.","⏱ Часы — заполни начало и конец смены, выбери: экраны, сцена или оба варианта, затем нажми «Сохранить смену». Всё сохраняется одной кнопкой в Google Таблицы. Если начало уже записано через бота, здесь можно завершить эту смену.":"⏱ Hours — enter the start and end of your shift, select screens, stage or both, then tap “Save shift”. One button saves everything to Google Sheets. If you already recorded the start in the bot, you can finish that shift here.","🌿 Выходные — отправь одну дату или период. Здесь будет видно решение руководителя.":"🌿 Time off — request one date or a date range. The manager’s decision appears here.","Команды бота тоже работают:\n/my — выезды и файлы\n/startwork — записать начало\n/endwork — записать окончание\n/hours — часы за месяц\n/off — заявка на выходной\n/help — инструкция\n/app — открыть это приложение":"Bot commands also work:\n/my — jobs and files\n/startwork — record start\n/endwork — record end\n/hours — monthly hours\n/off — request time off\n/help — instructions\n/app — open this app","Пример ручной записи: /startwork 06.10.26 08:00. Исправление и удаление часов делает руководитель. Если смена не записалась, обнови данные и сообщи ему.":"Manual entry example: /startwork 06.10.26 08:00. The manager handles corrections and deletions. If a shift was not saved, refresh the data and contact the manager.","Разделы":"Sections","Главная":"Home","Выезды":"Jobs","Часы":"Hours","Выходные":"Time off","Помощь":"Help","Просмотр файла":"File viewer","Закрыть":"Close","← Страница":"← Page","Страница →":"Page →","Уменьшить":"Zoom out","Увеличить":"Zoom in","По ширине":"Fit to width","Отправить в Telegram":"Send to Telegram","← Предыдущий файл":"← Previous file","Следующий файл →":"Next file →","Экраны":"Screens","Сцена":"Stage","Сцена и экраны":"Stage and screens","✅ Подтверждено":"✅ Confirmed","❌ Отказ":"❌ Declined","🕓 Ожидает решения":"🕓 Awaiting decision","✅ Разрешено":"✅ Approved","❌ Отклонено":"❌ Rejected","В config.js не указан публичный Apps Script /exec.":"The public Apps Script /exec URL is missing from config.js.","Ответ сервера":"Server response","Сервер не ответил. Проверь интернет и публичное развёртывание. Обнови данные перед повторной записью.":"The server did not respond. Check your connection and public deployment. Refresh before recording again.","Открой приложение кнопкой внутри Telegram.":"Open this app using the button inside Telegram.","Не удалось выполнить действие.":"Could not complete the action.","Обновляю данные…":"Refreshing data…","Загружаю твои данные…":"Loading your data…"," Показаны последние данные.":" Showing the latest saved data.","Дождись обновления данных с сервера.":"Wait for the server data to refresh.","Обновляю часы — дождись загрузки.":"Refreshing hours — please wait.","Сохраняю…":"Saving…","Не удалось сохранить. Обнови данные и повтори.":"Could not save. Refresh and try again.","Открой меню ⋯ вверху Telegram → «Добавить на экран Домой». Если пункта нет, обнови Telegram; возможность зависит от телефона.":"Open the ⋯ menu at the top of Telegram → “Add to Home Screen”. If it is missing, update Telegram; availability depends on your phone.","✓ Уже на экране «Домой»":"✓ Already on Home Screen","Приложение добавлено на главный экран.":"The app has been added to your home screen.","Подтверди добавление в окне Telegram. Если окно не появилось, используй меню ⋯ → «Добавить на экран Домой».":"Confirm in the Telegram dialog. If it does not appear, use ⋯ → “Add to Home Screen”.","Выбери тип работы":"Select work type","Дождись обновления данных.":"Wait for the data to refresh.","Файлы · ":"Files · ","Выезд":"Job","Все файлы в одном окне. Листай вниз.":"All files in one window. Scroll down.","Файл":"File","Загружаю…":"Loading…","Открыть PDF":"Open PDF","Этот формат можно получить в Telegram.":"You can receive this file format in Telegram.","Изображение · ":"Image · ","Не удалось показать изображение. Отправь файл в Telegram.":"Could not display the image. Send the file to Telegram.","Изображение · 100%":"Image · 100%","Показан первый 1 МБ текста.":"Showing the first 1 MB of text.","Текстовый файл":"Text file","Не удалось загрузить файл.":"Could not load the file.","Повторить":"Retry","Файл ":"File "," из ":" of ","Открываю страницу…":"Opening page…","Не удалось показать страницу. Используй «Отправить в Telegram».":"Could not display the page. Use “Send to Telegram”.","Загружаю файл…":"Loading file…","Этот формат пока не поддерживается для просмотра. Нажми «Отправить в Telegram».":"This format cannot be previewed yet. Tap “Send to Telegram”.","Изображение · 100%. Используй ＋ для увеличения.":"Image · 100%. Use ＋ to zoom in.","Показан первый 1 МБ текста. Полный файл можно получить в Telegram.":"Showing the first 1 MB of text. Receive the full file in Telegram.","Открываю PDF…":"Opening PDF…","Не удалось открыть файл. Проверь папку assets/pdfjs в GitHub или отправь файл в Telegram.":"Could not open the file. Check assets/pdfjs in GitHub or send the file to Telegram.","Часы за ":"Hours for ","нажми «Обновить итог часов»":"tap “Refresh hours total”","Итог обновлён: ":"Total updated: ","⚠️ Незакрытая смена с ":"⚠️ Open shift since ","Последняя заявка на выходной: ":"Latest time off request: ","Пока нет назначенных выездов.":"No assigned jobs yet.","📍 Открыть в Waze":"📍 Open in Waze","Схемы: ":"Schemes: ","🟢 Готовы":"🟢 Ready","🟡 Ожидаются":"🟡 Pending","Не нужны":"Not required","Команда: ":"Team: ","Список: ":"List: ","Причина отказа: ":"Reason for declining: ","✅ Подтвердить":"✅ Confirm","❌ Не могу":"❌ Cannot attend","Причина отказа":"Reason for declining","Сохранить отказ":"Save decline","Файлы и схемы":"Files and schemes","Посмотреть":"View","Файлов в просмотре: ":"Files in viewer: ","Получить Excel в Telegram":"Receive Excel in Telegram","Часы загрузятся при открытии этой вкладки.":"Hours load when you open this tab.","Руководитель ещё не включил учёт часов.":"The manager has not enabled time tracking yet.","Записать смену":"Record shift","Начало: ":"Start: ","Начало, окончание и тип работы сохраняются одной кнопкой.":"Start, end and work type are saved with one button.","<h3>Начало смены<\/h3><div class=\"row\"><label>Дата<input name=\"startDate\" type=\"date\" required><\/label><label>Время<input name=\"startTime\" type=\"time\" required><\/label><\/div><h3>Конец смены<\/h3><div class=\"row\"><label>Дата<input name=\"endDate\" type=\"date\" required><\/label><label>Время<input name=\"endTime\" type=\"time\" required><\/label><\/div>":"<h3>Shift start<\/h3><div class=\"row\"><label>Date<input name=\"startDate\" type=\"date\" required><\/label><label>Time<input name=\"startTime\" type=\"time\" required><\/label><\/div><h3>Shift end<\/h3><div class=\"row\"><label>Date<input name=\"endDate\" type=\"date\" required><\/label><label>Time<input name=\"endTime\" type=\"time\" required><\/label><\/div>","Где работал":"Where you worked","Сохранить смену":"Save shift","За выбранный месяц завершённых смен нет.":"No completed shifts in the selected month.","Окончание: ":"End: ","Тип работы пока не указан":"Work type not specified yet","Записать тип работы":"Record work type","Заявок на выходные пока нет.":"No time off requests yet.","Окончание периода должно быть не раньше начала.":"The end date must not be before the start date.","Показаны последние данные. Обновляю…":"Showing saved data. Refreshing…","Открой «Моё приложение» из личного чата с ботом. В обычном браузере данные работников недоступны.":"Open “My app” from your private bot chat. Worker data is not available in a regular browser.","Дата":"Date","Время":"Time","Начало смены":"Shift start","Конец смены":"Shift end","Правильная дата начала":"Correct start date","Правильное время начала":"Correct start time","Исправить начало":"Correct start","Mini App подключает владелец.":"Only the owner can connect the Mini App.","Некорректный вход Telegram.":"Invalid Telegram login.","Подпись Telegram недействительна.":"Invalid Telegram signature.","Бот ещё не подключён.":"The bot is not connected yet.","Сессия истекла. Закрой и снова открой приложение в Telegram.":"Your session expired. Close and reopen the app in Telegram.","Пользователь Telegram не найден.":"Telegram user not found.","Нажми Start в боте и дождись подтверждения руководителя.":"Press Start in the bot and wait for manager approval.","Выезд не найден.":"Job not found.","Этот выезд недоступен.":"This job is not available to you.","Выезд изменился. Обнови список и повтори.":"The job changed. Refresh the list and try again.","Не удалось загрузить журнал часов. Попробуй обновить.":"Could not load the time log. Try refreshing.","Не удалось загрузить данные. Обнови приложение.":"Could not load data. Refresh the app.","Не удалось открыть файл.":"Could not open the file.","Действие недоступно.":"This action is unavailable.","Обнови приложение и повтори.":"Refresh the app and try again.","Сервис занят. Повтори через несколько секунд.":"The service is busy. Try again in a few seconds.","Запрос уже использован.":"This request has already been used.","Запрос принят. Обнови данные и проверь результат перед повторением.":"Request received. Refresh and check the result before trying again.","Выбери ответ.":"Select a response.","Укажи причину отказа.":"Enter a reason for declining.","Выезд подтверждён.":"Job confirmed.","Отказ и причина сохранены.":"Decline and reason saved.","Выбери: экраны, сцена или оба варианта.":"Select screens, stage or both.","Начало уже записано. Обнови приложение.":"The start is already recorded. Refresh the app.","Смена изменилась. Обнови приложение.":"The shift changed. Refresh the app.","Тип работы сохранён.":"Work type saved.","Файл отправлен тебе в чат бота.":"File sent to your private bot chat.","Не удалось получить файл. Можно отправить его в Telegram.":"Could not retrieve the file. You can send it to Telegram.","Для просмотра нужен файл до 8 МБ. Используй отправку в Telegram.":"Preview supports files up to 8 MB. Use Send to Telegram.","Некорректный путь файла Telegram.":"Invalid Telegram file path.","Не удалось загрузить файл. Повтори или отправь его в Telegram.":"Could not load the file. Retry or send it to Telegram.","Не удалось загрузить файл из Telegram.":"Could not load the file from Telegram.","Файл больше 8 МБ. Используй отправку в Telegram.":"The file is larger than 8 MB. Use Send to Telegram.","Файл заменён. Обнови список выездов.":"The file was replaced. Refresh the job list.","Выбери тип работы.":"Select work type.","Смена недоступна.":"This shift is unavailable.","Тип уже записан. Для исправления обратись к руководителю.":"The type is already recorded. Contact your manager to correct it.","Учёт часов может включить только владелец приложения.":"Only the app owner can enable time tracking.","Сотрудник не найден.":"Employee not found.","Смена уже удалена.":"The shift was already deleted.","Укажи дату и время работы по Израилю.":"Enter the work date and time in Israel time.","Время больше чем на 10 минут впереди текущего. Проверь дату и время по Израилю.":"The time is more than 10 minutes in the future. Check the date and time in Israel time.","Лист с журналом часов не найден.":"Time log sheet not found.","Начало попадает в уже записанную смену. Проверь дату и время.":"The start overlaps a recorded shift. Check the date and time.","Эта смена пересекается с уже записанными часами. Попроси руководителя проверить записи.":"This shift overlaps recorded hours. Ask your manager to check the records.","Укажи дату и время начала и окончания.":"Enter the start and end date and time.","Проверь дату и время по часовому поясу Израиля.":"Check the date and time in the Israel time zone.","Учёт часов ещё не включён.":"Time tracking is not enabled yet.","Выбери записанную смену.":"Select a recorded shift.","Запись уже удалена. Обнови список смен.":"The record was deleted. Refresh the shift list.","Запись изменилась. Обнови список смен и проверь её.":"The record changed. Refresh the shift list and check it.","Выбери смену для исправления.":"Select a shift to correct.","Проверь дату начала и окончания смены.":"Check the shift start and end dates.","Смена не найдена. Обнови список смен.":"Shift not found. Refresh the shift list.","Смена уже изменена. Обнови список и выбери её снова.":"The shift changed. Refresh the list and select it again.","Это время пересекается с другой сменой сотрудника.":"This time overlaps another shift for this employee.","Это время пересекается с текущей сменой. Сначала заверши её через /endwork.":"This time overlaps the open shift. Finish it with /endwork first.","Выбери подтверждённого сотрудника.":"Select an approved employee.","Эта ручная смена уже записана. Повторная запись не создана.":"This manual shift is already saved. No duplicate was created.","У сотрудника уже есть смена в это время. Проверь журнал, чтобы не удвоить часы.":"The employee already has a shift at this time. Check the log to avoid duplicate hours.","У сотрудника уже идёт смена в это время. Сначала заверши её через /endwork.":"The employee has an open shift at this time. Finish it with /endwork first.","Сначала включи учёт часов в «Настройках».":"Enable time tracking in Settings first.","Такая заявка уже ожидает решения руководителя.":"This request is already awaiting the manager’s decision.","У тебя уже 10 заявок на рассмотрении. Дождись ответа руководителя.":"You already have 10 pending requests. Wait for the manager’s response."};
+  const storageKey = 'crew.interface.language';
+  let language = 'ru';
+  try { language = localStorage.getItem(storageKey) === 'en' ? 'en' : 'ru'; } catch (_) {}
+  const entries = [], keys = new Map(), dynamicKeys = new Map(), sources = new WeakMap(), bindings = new Set();
+  const marker = id => '\uE000' + id + '\uE001';
+  const tokenPattern = /\uE000(\d+)\uE001/g;
+  function t(source) {
+    if (!Object.prototype.hasOwnProperty.call(dictionary, source)) return source;
+    if (!keys.has(source)) { keys.set(source, entries.length); entries.push(() => language === 'en' ? dictionary[source] : source); }
+    return marker(keys.get(source));
+  }
+  function resolve(value) {
+    return String(value).replace(tokenPattern, (whole, id) => entries[Number(id)] ? entries[Number(id)]() : whole);
+  }
+  function dynamic(render, key) {
+    if (dynamicKeys.has(key)) return marker(dynamicKeys.get(key));
+    const id = entries.length; entries.push(render); dynamicKeys.set(key, id); return marker(id);
+  }
+  function format(value, options, upper = false) {
+    return dynamic(() => {
+      const result = new Intl.DateTimeFormat(language === 'en' ? 'en-GB' : 'ru-RU', options).format(new Date(value));
+      return upper ? result.replace(/\./g, '').toUpperCase() : result;
+    }, 'date:' + JSON.stringify([value, options, upper]));
+  }
+  function weekdays(value) {
+    const names = {понедельник:'Monday',вторник:'Tuesday',среда:'Wednesday',четверг:'Thursday',пятница:'Friday',суббота:'Saturday',воскресенье:'Sunday'};
+    return dynamic(() => language === 'en' ? String(value).replace(/понедельник|вторник|среда|четверг|пятница|суббота|воскресенье/gi, word => names[word.toLowerCase()]) : value, 'weekday:' + value);
+  }
+  function html(source) {
+    // Only compiler-selected, constant UI markup is passed here, never API data.
+    const template = document.createElement('template'); template.innerHTML = source;
+    const walker = document.createTreeWalker(template.content, NodeFilter.SHOW_TEXT);
+    let node;
+    while ((node = walker.nextNode())) {
+      const key = node.nodeValue.trim();
+      if (Object.prototype.hasOwnProperty.call(dictionary, key)) node.nodeValue = node.nodeValue.replace(key, t(key));
+    }
+    return template.innerHTML;
+  }
+  function update(node, attribute, initial = false) {
+    const current = attribute ? node.getAttribute(attribute) : node.nodeValue;
+    if (current == null) return;
+    let record = sources.get(node);
+    if (!record) { record = new Map(); sources.set(node, record); }
+    const slot = attribute || '#text';
+    let binding = record.get(slot);
+    if (binding && current !== binding.output) { record.delete(slot); binding = null; }
+    if (!binding) {
+      let source = current;
+      if (initial) {
+        const key = current.trim();
+        if (Object.prototype.hasOwnProperty.call(dictionary, key)) source = current.replace(key, t(key));
+      }
+      if (!/\uE000\d+\uE001/.test(source)) return;
+      binding = {source, output: current}; record.set(slot, binding); bindings.add(node);
+    }
+    const output = resolve(binding.source);
+    binding.output = output;
+    if (output !== current) { if (attribute) node.setAttribute(attribute, output); else node.nodeValue = output; }
+  }
+  function scan(root, initial = false) {
+    if (root.nodeType === 3) {
+      if (!root.parentElement?.closest('script,style,textarea,[data-language-picker]')) update(root, null, initial);
+      return;
+    }
+    if (root.nodeType !== 1 || root.matches('script,style,textarea,[data-language-picker]')) return;
+    for (const attribute of ['placeholder','aria-label','title','alt']) update(root, attribute, initial);
+    for (const child of root.childNodes) scan(child, initial);
+  }
+  function flush() {
+    scan(document.body);
+    for (const node of bindings) if (!node.isConnected) bindings.delete(node);
+  }
+  function forget(root) {
+    if (root.isConnected) return;
+    bindings.delete(root);
+    for (const child of root.childNodes || []) forget(child);
+  }
+  function setLanguage(next) {
+    if (!['ru','en'].includes(next)) return;
+    language = next;
+    try { localStorage.setItem(storageKey, language); } catch (_) {}
+    document.documentElement.lang = language;
+    flush();
+    for (const select of document.querySelectorAll('[data-language-picker] select')) {
+      select.value = language; select.setAttribute('aria-label', language === 'en' ? 'Interface language' : 'Язык интерфейса');
+    }
+    for (const node of bindings) {
+      const record = sources.get(node); if (!record) continue;
+      for (const attribute of record.keys()) update(node, attribute === '#text' ? null : attribute);
+    }
+  }
+  // Native dialogs and print must resolve UI labels before the observer runs.
+  for (const method of ['confirm','alert','prompt']) {
+    const native = window[method].bind(window);
+    window[method] = (message, ...args) => native(resolve(message), ...args);
+  }
+  const print = window.print.bind(window); window.print = (...args) => { flush(); return print(...args); };
+  scan(document.body, true);
+  const title = document.querySelector('title'); if (title) scan(title, true);
+  new MutationObserver(records => {
+    for (const record of records) {
+      if (record.type === 'childList') {
+        for (const node of record.addedNodes) scan(node);
+        for (const node of record.removedNodes || []) forget(node);
+      }
+      else if (record.type === 'characterData') scan(record.target);
+      else if (record.type === 'attributes') update(record.target, record.attributeName);
+    }
+  }).observe(document.body, {subtree:true, childList:true, characterData:true, attributes:true, attributeFilter:['placeholder','aria-label','title','alt']});
+  for (const select of document.querySelectorAll('[data-language-picker] select')) select.onchange = () => setLanguage(select.value);
+  setLanguage(language);
+  return {t, html, resolve, format, weekdays, setLanguage, flush, get locale() { return language === 'en' ? 'en-GB' : 'ru-RU'; }};
+})();
+</script>
 <script>
 'use strict';
 const tg=window.Telegram?.WebApp, $=id=>document.getElementById(id);
 let state=null,busy=false,sequence=0;
-const types={screen:'Экраны',stage:'Сцена',both:'Сцена и экраны'};
-const statuses={accepted:'✅ Подтверждено',declined:'❌ Отказ',pending:'🕓 Ожидает решения',approved:'✅ Разрешено',rejected:'❌ Отклонено'};
+const types={screen:CrewI18n.t('Экраны'),stage:CrewI18n.t('Сцена'),both:CrewI18n.t('Сцена и экраны')};
+const statuses={accepted:CrewI18n.t('✅ Подтверждено'),declined:CrewI18n.t('❌ Отказ'),pending:CrewI18n.t('🕓 Ожидает решения'),approved:CrewI18n.t('✅ Разрешено'),rejected:CrewI18n.t('❌ Отклонено')};
 const text=(tag,value,cls='')=>{const n=document.createElement(tag);n.textContent=value;n.className=cls;return n;};
-const date=value=>new Date(value).toLocaleString('ru-RU',{timeZone:'Asia/Jerusalem',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+const date=value=>CrewI18n.format(value,{timeZone:'Asia/Jerusalem',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
 const offDate=value=>value.split('-').reverse().join('.');
-function note(message,error=false){$('status').textContent=message;$('status').classList.toggle('error',error);}
+function note(message,error=false){$('status').textContent=CrewI18n.t(message);$('status').classList.toggle('error',error);}
 function setBusy(value){busy=value;document.querySelectorAll('button').forEach(b=>b.disabled=value);}
 function formTransport(request){
   return new Promise((resolve,reject)=>{
     const endpoint=window.CREW_MINI_CONFIG?.gasUrl||'';
-    if(!/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(endpoint)){reject(new Error('В config.js не указан публичный Apps Script /exec.'));return;}
+    if(!/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(endpoint)){reject(new Error(CrewI18n.t('В config.js не указан публичный Apps Script /exec.')));return;}
     const bytes=crypto.getRandomValues(new Uint8Array(32));
     const nonce=Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join('');
     const iframe=document.createElement('iframe'),form=document.createElement('form'),field=document.createElement('input');
-    iframe.name='crew_'+nonce;iframe.title='Ответ сервера';iframe.hidden=true;
+    iframe.name='crew_'+nonce;iframe.title=CrewI18n.t('Ответ сервера');iframe.hidden=true;
     form.method='POST';form.action=endpoint;form.target=iframe.name;form.hidden=true;form.acceptCharset='UTF-8';
     field.type='hidden';field.name='worker_payload';field.value=JSON.stringify({...request,transportNonce:nonce,clientOrigin:location.origin});form.append(field);
     const clean=()=>{clearTimeout(timer);window.removeEventListener('message',receive);iframe.remove();form.remove();};
@@ -49,14 +169,14 @@ function formTransport(request){
       if(!packet||packet.channel!=='crew-mini-response'||packet.nonce!==nonce)return;
       clean();resolve(packet.result);
     };
-    const timer=setTimeout(()=>{clean();reject(new Error('Сервер не ответил. Проверь интернет и публичное развёртывание. Обнови данные перед повторной записью.'));},90000);
+    const timer=setTimeout(()=>{clean();reject(new Error(CrewI18n.t('Сервер не ответил. Проверь интернет и публичное развёртывание. Обнови данные перед повторной записью.')));},90000);
     window.addEventListener('message',receive);document.body.append(iframe,form);form.submit();
   });
 }
 async function api(method,data={},requestId){
-  if(!tg?.initData)throw new Error('Открой приложение кнопкой внутри Telegram.');
+  if(!tg?.initData)throw new Error(CrewI18n.t('Открой приложение кнопкой внутри Telegram.'));
   const result=await formTransport({action:'workerMiniApp',initData:tg.initData,method,data,requestId});
-  if(!result.ok){const e=new Error(result.error||'Не удалось выполнить действие.');e.server=true;throw e;}return result;
+  if(!result.ok){const e=new Error(result.error||CrewI18n.t('Не удалось выполнить действие.'));e.server=true;throw e;}return result;
 }
 const pendingLoads=new Map();
 let activeTab='home', verified=false, hoursFresh=false, homeHoursRequested=false;
@@ -74,7 +194,7 @@ function load(silent=false){
   if(pendingLoads.has(key))return pendingLoads.get(key);
   const epoch=sequence;
   const task=(async()=>{try{
-    if(!silent)note(state?'Обновляю данные…':'Загружаю твои данные…');
+    if(!silent)note(state?CrewI18n.t('Обновляю данные…'):CrewI18n.t('Загружаю твои данные…'));
     const r=await api('snapshot',{month,includeHours});
     if(epoch!==sequence)return;
     const previousHours=state?.hours;
@@ -82,7 +202,7 @@ function load(silent=false){
     verified=true;if(includeHours)hoursFresh=!state.hours?.error;
     render();savePreview();if(!silent)note('');
   }catch(e){if(epoch!==sequence)return;if(!verified){try{const key=cacheKey();if(key)localStorage.removeItem(key);}catch(_){} }
-    note(e.message+(state?' Показаны последние данные.':''),true);
+    note(e.message+(state?CrewI18n.t(' Показаны последние данные.'):''),true);
   }finally{pendingLoads.delete(key);} })();
   pendingLoads.set(key,task);return task;
 }
@@ -92,13 +212,13 @@ function miniRequestId(){
 let pendingMutation=null;
 async function act(method,data){
   if(busy)return;
-  if(!verified){note('Дождись обновления данных с сервера.',true);return;}
-  if(['start','end','recordShift','type'].includes(method)&&!hoursFresh){note('Обновляю часы — дождись загрузки.');load();return;}
+  if(!verified){note(CrewI18n.t('Дождись обновления данных с сервера.'),true);return;}
+  if(['start','end','recordShift','type'].includes(method)&&!hoursFresh){note(CrewI18n.t('Обновляю часы — дождись загрузки.'));load();return;}
   sequence++;setBusy(true);
   try{
     const signature=JSON.stringify({method,data});
     if(!pendingMutation||pendingMutation.signature!==signature)pendingMutation={signature,id:miniRequestId()};
-    const id=pendingMutation.id;note('Сохраняю…');
+    const id=pendingMutation.id;note(CrewI18n.t('Сохраняю…'));
     const r=await api(method,data,id);
     pendingMutation=null;
     if(r.response&&state){
@@ -113,20 +233,20 @@ async function act(method,data){
       setBusy(false);
       void load(true);
     }
-  }catch(e){if(e.server)pendingMutation=null;note(e.message||'Не удалось сохранить. Обнови данные и повтори.',true);}
+  }catch(e){if(e.server)pendingMutation=null;note(e.message||CrewI18n.t('Не удалось сохранить. Обнови данные и повтори.'),true);}
   finally{setBusy(false);}
 }
 function setupHomeScreen(){
   const button=$('addHome'),status=$('homeStatus');
   const supported=Boolean(tg?.isVersionAtLeast?.('8.0')&&typeof tg?.addToHomeScreen==='function');
-  const fallback='Открой меню ⋯ вверху Telegram → «Добавить на экран Домой». Если пункта нет, обнови Telegram; возможность зависит от телефона.';
+  const fallback=CrewI18n.t('Открой меню ⋯ вверху Telegram → «Добавить на экран Домой». Если пункта нет, обнови Telegram; возможность зависит от телефона.');
   const show=value=>{
-    if(value==='added'){button.textContent='✓ Уже на экране «Домой»';button.hidden=true;status.textContent='Приложение добавлено на главный экран.';}
+    if(value==='added'){button.textContent=CrewI18n.t('✓ Уже на экране «Домой»');button.hidden=true;status.textContent=CrewI18n.t('Приложение добавлено на главный экран.');}
     else if(value==='unsupported'){status.textContent=fallback;}
   };
   button.onclick=()=>{
     if(!supported){status.textContent=fallback;return;}
-    try{tg.addToHomeScreen();status.textContent='Подтверди добавление в окне Telegram. Если окно не появилось, используй меню ⋯ → «Добавить на экран Домой».';}
+    try{tg.addToHomeScreen();status.textContent=CrewI18n.t('Подтверди добавление в окне Telegram. Если окно не появилось, используй меню ⋯ → «Добавить на экран Домой».');}
     catch(_){status.textContent=fallback;}
   };
   if(supported){
@@ -134,21 +254,21 @@ function setupHomeScreen(){
   }else status.textContent=fallback;
 }
 
-function typeSelect(){const select=document.createElement('select');select.name='type';select.required=true;select.append(new Option('Выбери тип работы',''));for(const [key,value] of Object.entries(types))select.append(new Option(value,key));return select;}
+function typeSelect(){const select=document.createElement('select');select.name='type';select.required=true;select.append(new Option(CrewI18n.t('Выбери тип работы'),''));for(const [key,value] of Object.entries(types))select.append(new Option(value,key));return select;}
 function button(label,fn,cls='secondary'){const b=text('button',label,cls);b.type='button';b.onclick=fn;return b;}
 let viewerEpoch=0,viewerTrip=null,viewerObjectUrl=null,viewerPdfTask=null,viewerPdf=null,viewerRender=null,viewerPage=1,viewerZoom=1,viewerKind='',viewerFocus=null,viewerOverflow='',viewerRendering=false,viewerGroup=null,viewerGalleryUrls=[];
 function isExcelFile(file){return /\.(xlsx?|xlsm|xlsb|xltx?|xltm)$/i.test(file.name||'')||/^(application\/vnd\.ms-excel|application\/vnd\.openxmlformats-officedocument\.spreadsheetml\.|application\/vnd\.ms-excel\.)/i.test(file.mimeType||'');}
 async function previewTripFiles(trip){
-  if(!verified||busy){note('Дождись обновления данных.',true);return;}
+  if(!verified||busy){note(CrewI18n.t('Дождись обновления данных.'),true);return;}
   const indices=trip.attachments.map((file,index)=>isExcelFile(file)?-1:index).filter(index=>index>=0);if(!indices.length)return;
   if(!$('fileViewer').hidden)closeFileViewer();
   const epoch=++viewerEpoch;clearViewerResources();viewerFocus=document.activeElement;viewerOverflow=document.body.style.overflow;document.body.style.overflow='hidden';
   viewerTrip=null;viewerGroup=null;viewerKind='gallery';$('fileViewer').hidden=false;
-  $('viewerTitle').textContent='Файлы · '+(trip.title||'Выезд');$('viewerStatus').textContent='Все файлы в одном окне. Листай вниз.';
+  $('viewerTitle').textContent=CrewI18n.t('Файлы · ')+(trip.title||CrewI18n.t('Выезд'));$('viewerStatus').textContent=CrewI18n.t('Все файлы в одном окне. Листай вниз.');
   $('fileViewer').focus();viewerControls();try{tg?.BackButton?.show();}catch(_){}
   const cards=indices.map(index=>{
-    const card=text('section','','gallery-file'),heading=text('h3',trip.attachments[index]?.name||'Файл');
-    const status=text('p','Загружаю…','notice'),controls=text('div','','viewer-tools'),content=text('div','','gallery-file-content');
+    const card=text('section','','gallery-file'),heading=text('h3',trip.attachments[index]?.name||CrewI18n.t('Файл'));
+    const status=text('p',CrewI18n.t('Загружаю…'),'notice'),controls=text('div','','viewer-tools'),content=text('div','','gallery-file-content');
     card.append(heading,status,controls,content);$('viewerContent').append(card);return {index,status,controls,content};
   });
   // Keep network and base64 decoding bounded on phones; each completed image stays visible.
@@ -158,33 +278,33 @@ async function previewTripFiles(trip){
   }
 }
 async function loadGalleryFile(trip,card,epoch){
-  const {index,status,controls,content}=card;status.textContent='Загружаю…';controls.replaceChildren();
-  const send=button('Отправить в Telegram',()=>{if(epoch===viewerEpoch)void act('files',{tripId:trip.id,version:trip.version,index});});
+  const {index,status,controls,content}=card;status.textContent=CrewI18n.t('Загружаю…');controls.replaceChildren();
+  const send=button(CrewI18n.t('Отправить в Telegram'),()=>{if(epoch===viewerEpoch)void act('files',{tripId:trip.id,version:trip.version,index});});
   try{
     const r=await api('previewFile',{tripId:trip.id,version:trip.version,index});if(epoch!==viewerEpoch)return;
     const f=r.file;
     if(f.kind==='pdf'){
-      status.textContent='PDF';controls.append(button('Открыть PDF',()=>void previewTripFile(trip,index)),send);return;
+      status.textContent='PDF';controls.append(button(CrewI18n.t('Открыть PDF'),()=>void previewTripFile(trip,index)),send);return;
     }
     if(f.kind==='unsupported'){
-      status.textContent='Этот формат можно получить в Telegram.';controls.append(send);return;
+      status.textContent=CrewI18n.t('Этот формат можно получить в Telegram.');controls.append(send);return;
     }
     const binary=atob(f.base64),bytes=new Uint8Array(binary.length);for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
     if(f.kind==='image'){
       const url=URL.createObjectURL(new Blob([bytes],{type:f.mimeType}));viewerGalleryUrls.push(url);
       const img=document.createElement('img');img.alt=f.name;let zoom=1;
-      const resize=value=>{zoom=value;img.style.width=Math.round(zoom*100)+'%';status.textContent='Изображение · '+Math.round(zoom*100)+'%';};
-      controls.append(button('−',()=>resize(Math.max(.5,zoom/1.25))),button('＋',()=>resize(Math.min(4,zoom*1.25))),button('По ширине',()=>resize(1)),send);
-      img.onload=()=>{if(epoch===viewerEpoch)resize(zoom);};img.onerror=()=>{if(epoch===viewerEpoch)status.textContent='Не удалось показать изображение. Отправь файл в Telegram.';};
-      img.src=url;content.append(img);status.textContent='Изображение · 100%';
+      const resize=value=>{zoom=value;img.style.width=Math.round(zoom*100)+'%';status.textContent=CrewI18n.t('Изображение · ')+Math.round(zoom*100)+'%';};
+      controls.append(button('−',()=>resize(Math.max(.5,zoom/1.25))),button('＋',()=>resize(Math.min(4,zoom*1.25))),button(CrewI18n.t('По ширине'),()=>resize(1)),send);
+      img.onload=()=>{if(epoch===viewerEpoch)resize(zoom);};img.onerror=()=>{if(epoch===viewerEpoch)status.textContent=CrewI18n.t('Не удалось показать изображение. Отправь файл в Telegram.');};
+      img.src=url;content.append(img);status.textContent=CrewI18n.t('Изображение · 100%');
     }else if(f.kind==='text'){
       content.append(text('pre',new TextDecoder('utf-8').decode(bytes)));controls.append(send);
-      status.textContent=f.truncated?'Показан первый 1 МБ текста.':'Текстовый файл';
-    }else{status.textContent='Этот формат можно получить в Telegram.';controls.append(send);}
+      status.textContent=f.truncated?CrewI18n.t('Показан первый 1 МБ текста.'):CrewI18n.t('Текстовый файл');
+    }else{status.textContent=CrewI18n.t('Этот формат можно получить в Telegram.');controls.append(send);}
   }catch(e){
     if(epoch!==viewerEpoch)return;
-    status.textContent=e.server?e.message:'Не удалось загрузить файл.';
-    controls.append(button('Повторить',()=>void loadGalleryFile(trip,card,epoch)),send);
+    status.textContent=e.server?e.message:CrewI18n.t('Не удалось загрузить файл.');
+    controls.append(button(CrewI18n.t('Повторить'),()=>void loadGalleryFile(trip,card,epoch)),send);
   }
 }
 function switchViewerFile(direction){if(!viewerGroup||busy)return;const group=viewerGroup,pos=group.indices.indexOf(viewerTrip.index),index=group.indices[pos+direction];if(index!==undefined)void previewTripFile(group.trip,index,group);}
@@ -204,7 +324,7 @@ function closeFileViewer(){
 function viewerControls(){
   const pos=viewerGroup?viewerGroup.indices.indexOf(viewerTrip.index):0,count=viewerGroup?.indices.length||0;
   $('viewerFilePrev').hidden=count<2;$('viewerFileNext').hidden=count<2;$('viewerFileCount').hidden=!count;
-  $('viewerFilePrev').disabled=pos<=0;$('viewerFileNext').disabled=pos>=count-1;$('viewerFileCount').textContent=count?'Файл '+(pos+1)+' из '+count:'';
+  $('viewerFilePrev').disabled=pos<=0;$('viewerFileNext').disabled=pos>=count-1;$('viewerFileCount').textContent=count?CrewI18n.t('Файл ')+(pos+1)+CrewI18n.t(' из ')+count:'';
   const pdf=viewerKind==='pdf'&&Boolean(viewerPdf),zoom=viewerKind==='image'||pdf;
   for(const id of ['viewerMinus','viewerPlus','viewerFit'])$(id).hidden=!zoom;
   $('viewerPrev').hidden=!pdf;$('viewerNext').hidden=!pdf;
@@ -221,35 +341,35 @@ async function renderViewerPdf(epoch=viewerEpoch){
     const scale=Math.min(desired,4096/Math.max(natural.width,natural.height));
     const viewport=page.getViewport({scale}),density=Math.min(window.devicePixelRatio||1,2,4096/Math.max(viewport.width,viewport.height));
     const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.floor(viewport.width*density));canvas.height=Math.max(1,Math.floor(viewport.height*density));canvas.style.width=viewport.width+'px';canvas.style.height=viewport.height+'px';
-    $('viewerContent').replaceChildren(canvas);$('viewerStatus').textContent='Открываю страницу…';
+    $('viewerContent').replaceChildren(canvas);$('viewerStatus').textContent=CrewI18n.t('Открываю страницу…');
     const task=page.render({canvasContext:canvas.getContext('2d'),viewport,transform:density!==1?[density,0,0,density,0,0]:null});viewerRender=task;await task.promise;
     if(epoch===viewerEpoch){$('viewerStatus').textContent='PDF · '+Math.round(viewerZoom*100)+'%';viewerRender=null;}
-  }catch(e){if(epoch===viewerEpoch&&e.name!=='RenderingCancelledException')$('viewerStatus').textContent='Не удалось показать страницу. Используй «Отправить в Telegram».';}
+  }catch(e){if(epoch===viewerEpoch&&e.name!=='RenderingCancelledException')$('viewerStatus').textContent=CrewI18n.t('Не удалось показать страницу. Используй «Отправить в Telegram».');}
   finally{if(epoch===viewerEpoch){viewerRendering=false;viewerControls();}}
 }
 function zoomViewer(change){
   if(viewerRendering)return;viewerZoom=change==='fit'?1:Math.max(0.5,Math.min(4,viewerZoom*change));
   if(viewerKind==='pdf')void renderViewerPdf();
-  else {const img=$('viewerContent').querySelector('img');if(img)img.style.width=(viewerZoom*100)+'%';$('viewerStatus').textContent='Изображение · '+Math.round(viewerZoom*100)+'%';}
+  else {const img=$('viewerContent').querySelector('img');if(img)img.style.width=(viewerZoom*100)+'%';$('viewerStatus').textContent=CrewI18n.t('Изображение · ')+Math.round(viewerZoom*100)+'%';}
 }
 async function previewTripFile(trip,index,group=null){
-  if(!verified||busy){note('Дождись обновления данных.',true);return;}
+  if(!verified||busy){note(CrewI18n.t('Дождись обновления данных.'),true);return;}
   if(!$('fileViewer').hidden)closeFileViewer();
   const epoch=++viewerEpoch;clearViewerResources();viewerFocus=document.activeElement;viewerOverflow=document.body.style.overflow;document.body.style.overflow='hidden';
   viewerTrip={tripId:trip.id,version:trip.version,index};viewerGroup=group;viewerPage=1;viewerZoom=1;viewerKind='';
-  $('fileViewer').hidden=false;$('viewerTitle').textContent=trip.attachments[index]?.name||'Файл';$('viewerStatus').textContent='Загружаю файл…';$('fileViewer').focus();viewerControls();try{tg?.BackButton?.show();}catch(_){}
+  $('fileViewer').hidden=false;$('viewerTitle').textContent=trip.attachments[index]?.name||CrewI18n.t('Файл');$('viewerStatus').textContent=CrewI18n.t('Загружаю файл…');$('fileViewer').focus();viewerControls();try{tg?.BackButton?.show();}catch(_){}
   try{
     const r=await api('previewFile',viewerTrip);if(epoch!==viewerEpoch)return;
     const f=r.file;$('viewerTitle').textContent=f.name;viewerKind=f.kind;
-    if(f.kind==='unsupported'){$('viewerStatus').textContent='Этот формат пока не поддерживается для просмотра. Нажми «Отправить в Telegram».';viewerControls();return;}
+    if(f.kind==='unsupported'){$('viewerStatus').textContent=CrewI18n.t('Этот формат пока не поддерживается для просмотра. Нажми «Отправить в Telegram».');viewerControls();return;}
     const binary=atob(f.base64),bytes=new Uint8Array(binary.length);for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
     if(f.kind==='image'){
       viewerObjectUrl=URL.createObjectURL(new Blob([bytes],{type:f.mimeType}));const img=document.createElement('img');img.alt=f.name;
-      img.onload=()=>{if(epoch===viewerEpoch)$('viewerStatus').textContent='Изображение · 100%. Используй ＋ для увеличения.';};img.onerror=()=>{if(epoch===viewerEpoch)$('viewerStatus').textContent='Не удалось показать изображение. Отправь файл в Telegram.';};img.src=viewerObjectUrl;$('viewerContent').append(img);
+      img.onload=()=>{if(epoch===viewerEpoch)$('viewerStatus').textContent=CrewI18n.t('Изображение · 100%. Используй ＋ для увеличения.');};img.onerror=()=>{if(epoch===viewerEpoch)$('viewerStatus').textContent=CrewI18n.t('Не удалось показать изображение. Отправь файл в Telegram.');};img.src=viewerObjectUrl;$('viewerContent').append(img);
     }else if(f.kind==='text'){
-      const pre=text('pre',new TextDecoder('utf-8').decode(bytes));$('viewerContent').append(pre);$('viewerStatus').textContent=f.truncated?'Показан первый 1 МБ текста. Полный файл можно получить в Telegram.':'Текстовый файл';
+      const pre=text('pre',new TextDecoder('utf-8').decode(bytes));$('viewerContent').append(pre);$('viewerStatus').textContent=f.truncated?CrewI18n.t('Показан первый 1 МБ текста. Полный файл можно получить в Telegram.'):CrewI18n.t('Текстовый файл');
     }else if(f.kind==='pdf'){
-      $('viewerStatus').textContent='Открываю PDF…';const pdfjs=await import('./assets/pdfjs/pdf.min.mjs');if(epoch!==viewerEpoch)return;
+      $('viewerStatus').textContent=CrewI18n.t('Открываю PDF…');const pdfjs=await import('./assets/pdfjs/pdf.min.mjs');if(epoch!==viewerEpoch)return;
       pdfjs.GlobalWorkerOptions.workerSrc=new URL('./assets/pdfjs/pdf.worker.min.mjs',location.href).href;
       class PackedPdfDataFactory{
         constructor(options){Object.assign(this,options);this.maps=null;}
@@ -267,7 +387,7 @@ async function previewTripFile(trip,index,group=null){
       const doc=await task.promise;if(epoch!==viewerEpoch){await task.destroy();return;}viewerPdf=doc;await renderViewerPdf(epoch);
     }
     if(epoch===viewerEpoch)viewerControls();
-  }catch(e){if(epoch===viewerEpoch){$('viewerStatus').textContent=(e.server?e.message:'Не удалось открыть файл. Проверь папку assets/pdfjs в GitHub или отправь файл в Telegram.');viewerControls();}}
+  }catch(e){if(epoch===viewerEpoch){$('viewerStatus').textContent=(e.server?e.message:CrewI18n.t('Не удалось открыть файл. Проверь папку assets/pdfjs в GitHub или отправь файл в Telegram.'));viewerControls();}}
 }
 function render(){
   $('name').textContent=state.name;
@@ -278,58 +398,58 @@ function render(){
 function renderHome(){
   const summary=$('homeSummary');summary.replaceChildren();
   const total=state.homeHours?.total||(hoursFresh&&state.hours?.month===state.currentMonth?state.hours.total:null);
-  summary.append(text('p','Часы за '+state.currentMonth+': '+(total||'нажми «Обновить итог часов»')));
-  if(state.homeHours?.at)summary.append(text('p','Итог обновлён: '+date(state.homeHours.at),'notice'));
+  summary.append(text('p',CrewI18n.t('Часы за ')+state.currentMonth+': '+(total||CrewI18n.t('нажми «Обновить итог часов»'))));
+  if(state.homeHours?.at)summary.append(text('p',CrewI18n.t('Итог обновлён: ')+date(state.homeHours.at),'notice'));
   const open=state.homeOpen;
-  if(open)summary.append(text('p','⚠️ Незакрытая смена с '+date(open.startedAt),'notice'));
-  const off=$('homeOff');off.replaceChildren();if(state.off.length){const r=state.off[0];off.append(text('p','Последняя заявка на выходной: '+offDate(r.from)+' · '+(statuses[r.status]||r.status)));}
+  if(open)summary.append(text('p',CrewI18n.t('⚠️ Незакрытая смена с ')+date(open.startedAt),'notice'));
+  const off=$('homeOff');off.replaceChildren();if(state.off.length){const r=state.off[0];off.append(text('p',CrewI18n.t('Последняя заявка на выходной: ')+offDate(r.from)+' · '+(statuses[r.status]||r.status)));}
   renderTrips($('homeTrip'));
 }
 function renderTrips(target){
   const list=target||$('tripList');list.replaceChildren();let rows=state.trips.filter(t=>target?t.date>=state.today:$('past').checked||t.date>=state.today);if(target)rows=rows.slice(0,1);
-  if(!rows.length){list.append(text('p','Пока нет назначенных выездов.','empty'));return;}
+  if(!rows.length){list.append(text('p',CrewI18n.t('Пока нет назначенных выездов.'),'empty'));return;}
   for(const trip of rows){const card=text('article','','card trip '+(trip.types.length===2?'both':trip.types[0]));
-    card.append(text('span',statuses[trip.status]||statuses.pending,'badge '+trip.status),text('h3',trip.title),text('p',trip.when),text('p','📍 '+trip.location),text('p','🚐 '+trip.car),text('p','🎭 '+trip.types.map(t=>types[t]).join(' + ')));
-    const map=text('a','📍 Открыть в Waze');map.href='https://waze.com/ul?q='+encodeURIComponent(trip.location)+'&navigate=yes&utm_source=crew_calendar';map.target='_blank';map.rel='noopener noreferrer';map.onclick=e=>{if(tg?.openLink){e.preventDefault();tg.openLink(map.href);}};card.append(map);
-    if(trip.schemeStatus)card.append(text('p','Схемы: '+({ready:'🟢 Готовы',waiting:'🟡 Ожидаются',not_required:'Не нужны'}[trip.schemeStatus]||trip.schemeStatus),'muted'));
-    if(trip.names.length)card.append(text('p','Команда: '+trip.names.join(', '),'muted'));
-    if(trip.notes)card.append(text('p',trip.notes));if(trip.schemeList)card.append(text('p','Список: '+trip.schemeList));
-    if(trip.reason)card.append(text('p','Причина отказа: '+trip.reason,'muted'));
-    if(trip.date>=state.today){const row=text('div','','row');row.append(button('✅ Подтвердить',()=>act('respond',{tripId:trip.id,version:trip.version,status:'accepted'}),''));
-      const detail=document.createElement('details');detail.append(text('summary','❌ Не могу'));
-      const form=document.createElement('form'),label=text('label','Причина отказа'),reason=document.createElement('textarea');reason.required=true;reason.maxLength=500;label.append(reason);form.append(label,text('button','Сохранить отказ','danger'));form.onsubmit=e=>{e.preventDefault();act('respond',{tripId:trip.id,version:trip.version,status:'declined',reason:reason.value});};detail.append(form);card.append(row,detail);}
+    card.append(text('span',statuses[trip.status]||statuses.pending,'badge '+trip.status),text('h3',trip.title),text('p',CrewI18n.weekdays(trip.when)),text('p','📍 '+trip.location),text('p','🚐 '+trip.car),text('p','🎭 '+trip.types.map(t=>types[t]).join(' + ')));
+    const map=text('a',CrewI18n.t('📍 Открыть в Waze'));map.href='https://waze.com/ul?q='+encodeURIComponent(trip.location)+'&navigate=yes&utm_source=crew_calendar';map.target='_blank';map.rel='noopener noreferrer';map.onclick=e=>{if(tg?.openLink){e.preventDefault();tg.openLink(map.href);}};card.append(map);
+    if(trip.schemeStatus)card.append(text('p',CrewI18n.t('Схемы: ')+({ready:CrewI18n.t('🟢 Готовы'),waiting:CrewI18n.t('🟡 Ожидаются'),not_required:CrewI18n.t('Не нужны')}[trip.schemeStatus]||trip.schemeStatus),'muted'));
+    if(trip.names.length)card.append(text('p',CrewI18n.t('Команда: ')+trip.names.join(', '),'muted'));
+    if(trip.notes)card.append(text('p',trip.notes));if(trip.schemeList)card.append(text('p',CrewI18n.t('Список: ')+trip.schemeList));
+    if(trip.reason)card.append(text('p',CrewI18n.t('Причина отказа: ')+trip.reason,'muted'));
+    if(trip.date>=state.today){const row=text('div','','row');row.append(button(CrewI18n.t('✅ Подтвердить'),()=>act('respond',{tripId:trip.id,version:trip.version,status:'accepted'}),''));
+      const detail=document.createElement('details');detail.append(text('summary',CrewI18n.t('❌ Не могу')));
+      const form=document.createElement('form'),label=text('label',CrewI18n.t('Причина отказа')),reason=document.createElement('textarea');reason.required=true;reason.maxLength=500;label.append(reason);form.append(label,text('button',CrewI18n.t('Сохранить отказ'),'danger'));form.onsubmit=e=>{e.preventDefault();act('respond',{tripId:trip.id,version:trip.version,status:'declined',reason:reason.value});};detail.append(form);card.append(row,detail);}
     if(trip.attachments.length){
-      card.append(text('p','Файлы и схемы','muted'));
+      card.append(text('p',CrewI18n.t('Файлы и схемы'),'muted'));
       const count=trip.attachments.filter(f=>!isExcelFile(f)).length;
-      if(count){card.append(button('Посмотреть',()=>previewTripFiles(trip),''),text('p','Файлов в просмотре: '+count,'notice'));}
-      trip.attachments.forEach((f,index)=>{if(!isExcelFile(f))return;const box=text('div','','card');box.append(text('p','📊 '+f.name),button('Получить Excel в Telegram',()=>act('files',{tripId:trip.id,version:trip.version,index})));card.append(box);});
+      if(count){card.append(button(CrewI18n.t('Посмотреть'),()=>previewTripFiles(trip),''),text('p',CrewI18n.t('Файлов в просмотре: ')+count,'notice'));}
+      trip.attachments.forEach((f,index)=>{if(!isExcelFile(f))return;const box=text('div','','card');box.append(text('p','📊 '+f.name),button(CrewI18n.t('Получить Excel в Telegram'),()=>act('files',{tripId:trip.id,version:trip.version,index})));card.append(box);});
     }
     list.append(card);
   }
 }
 function renderHours(){
   const h=state.hours,select=$('month');
-  if(!h){$('total').textContent='—';$('clock').replaceChildren(text('p','Часы загрузятся при открытии этой вкладки.','empty'));$('shiftList').replaceChildren();return;}
-  select.replaceChildren();for(const m of h.months)select.append(new Option(new Date(m+'-01T12:00:00Z').toLocaleDateString('ru-RU',{month:'long',year:'numeric'}),m));select.value=h.month;$('total').textContent=h.total;
+  if(!h){$('total').textContent='—';$('clock').replaceChildren(text('p',CrewI18n.t('Часы загрузятся при открытии этой вкладки.'),'empty'));$('shiftList').replaceChildren();return;}
+  select.replaceChildren();for(const m of h.months)select.append(new Option(CrewI18n.format(m+'-01T12:00:00Z',{month:'long',year:'numeric'}),m));select.value=h.month;$('total').textContent=h.total;
   const clock=$('clock');clock.replaceChildren();
-  if(!h.ready){clock.append(text('p','Руководитель ещё не включил учёт часов.','empty'));}
-  else{const card=text('div','','card');card.append(text('h2','Записать смену'));
-    if(h.open)card.append(text('p','Начало: '+date(h.open.startedAt),'muted'));
-    card.append(text('p','Начало, окончание и тип работы сохраняются одной кнопкой.','notice'));
-    const form=document.createElement('form');form.innerHTML='<h3>Начало смены</h3><div class="row"><label>Дата<input name="startDate" type="date" required></label><label>Время<input name="startTime" type="time" required></label></div><h3>Конец смены</h3><div class="row"><label>Дата<input name="endDate" type="date" required></label><label>Время<input name="endTime" type="time" required></label></div>';
+  if(!h.ready){clock.append(text('p',CrewI18n.t('Руководитель ещё не включил учёт часов.'),'empty'));}
+  else{const card=text('div','','card');card.append(text('h2',CrewI18n.t('Записать смену')));
+    if(h.open)card.append(text('p',CrewI18n.t('Начало: ')+date(h.open.startedAt),'muted'));
+    card.append(text('p',CrewI18n.t('Начало, окончание и тип работы сохраняются одной кнопкой.'),'notice'));
+    const form=document.createElement('form');form.innerHTML=CrewI18n.html('<h3>Начало смены</h3><div class="row"><label>Дата<input name="startDate" type="date" required></label><label>Время<input name="startTime" type="time" required></label></div><h3>Конец смены</h3><div class="row"><label>Дата<input name="endDate" type="date" required></label><label>Время<input name="endTime" type="time" required></label></div>');
     for(const key of ['startDate','endDate']){form.elements[key].value=state.today;form.elements[key].max=state.today;}
     if(h.open){const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Jerusalem',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date(h.open.startedAt));const part=k=>parts.find(p=>p.type===k).value;form.elements.startDate.value=part('year')+'-'+part('month')+'-'+part('day');form.elements.startTime.value=part('hour')+':'+part('minute');form.elements.startDate.disabled=true;form.elements.startTime.disabled=true;}
-    const label=text('label','Где работал');label.append(typeSelect());form.append(label);
-    form.append(text('button','Сохранить смену'));form.onsubmit=e=>{e.preventDefault();const f=form.elements;act(h.open?'end':'recordShift',h.open?{date:f.endDate.value,time:f.endTime.value,openId:h.open.id,type:f.type.value}:{startDate:f.startDate.value,startTime:f.startTime.value,endDate:f.endDate.value,endTime:f.endTime.value,type:f.type.value});};card.append(form);clock.append(card);
+    const label=text('label',CrewI18n.t('Где работал'));label.append(typeSelect());form.append(label);
+    form.append(text('button',CrewI18n.t('Сохранить смену')));form.onsubmit=e=>{e.preventDefault();const f=form.elements;act(h.open?'end':'recordShift',h.open?{date:f.endDate.value,time:f.endTime.value,openId:h.open.id,type:f.type.value}:{startDate:f.startDate.value,startTime:f.startTime.value,endDate:f.endDate.value,endTime:f.endTime.value,type:f.type.value});};card.append(form);clock.append(card);
   }
-  if(h.error)clock.append(text('p',h.error,'status error'));
-  const list=$('shiftList');list.replaceChildren();if(!h.shifts.length)list.append(text('p','За выбранный месяц завершённых смен нет.','empty'));
-  for(const shift of h.shifts){const card=text('article','','card');card.append(text('h3',shift.hours),text('p','Начало: '+date(shift.start)),text('p','Окончание: '+date(shift.end)),text('p',types[shift.type]||'Тип работы пока не указан','muted'));
-    if(!shift.type){const form=document.createElement('form');form.append(typeSelect(),text('button','Записать тип работы','secondary'));form.onsubmit=e=>{e.preventDefault();act('type',{shiftId:shift.id,type:form.elements.type.value});};card.append(form);}list.append(card);}
+  if(h.error)clock.append(text('p',CrewI18n.t(h.error),'status error'));
+  const list=$('shiftList');list.replaceChildren();if(!h.shifts.length)list.append(text('p',CrewI18n.t('За выбранный месяц завершённых смен нет.'),'empty'));
+  for(const shift of h.shifts){const card=text('article','','card');card.append(text('h3',shift.hours),text('p',CrewI18n.t('Начало: ')+date(shift.start)),text('p',CrewI18n.t('Окончание: ')+date(shift.end)),text('p',types[shift.type]||CrewI18n.t('Тип работы пока не указан'),'muted'));
+    if(!shift.type){const form=document.createElement('form');form.append(typeSelect(),text('button',CrewI18n.t('Записать тип работы'),'secondary'));form.onsubmit=e=>{e.preventDefault();act('type',{shiftId:shift.id,type:form.elements.type.value});};card.append(form);}list.append(card);}
 }
-function renderOff(){const list=$('offList');list.replaceChildren();if(!state.off.length)list.append(text('p','Заявок на выходные пока нет.','empty'));for(const item of state.off){const card=text('article','','card');card.append(text('span',statuses[item.status]||item.status,'badge '+item.status),text('h3',offDate(item.from)+(item.to!==item.from?' — '+offDate(item.to):'')));if(item.note)card.append(text('p',item.note));list.append(card);}}
+function renderOff(){const list=$('offList');list.replaceChildren();if(!state.off.length)list.append(text('p',CrewI18n.t('Заявок на выходные пока нет.'),'empty'));for(const item of state.off){const card=text('article','','card');card.append(text('span',statuses[item.status]||item.status,'badge '+item.status),text('h3',offDate(item.from)+(item.to!==item.from?' — '+offDate(item.to):'')));if(item.note)card.append(text('p',item.note));list.append(card);}}
 $('past').onchange=()=>{if(state)renderTrips();};$('month').onchange=()=>{sequence++;hoursFresh=false;load();};$('refresh').onclick=()=>{sequence++;hoursFresh=false;load();};
-$('offForm').onsubmit=e=>{e.preventDefault();const f=e.currentTarget;if(f.elements.to.value<f.elements.from.value){note('Окончание периода должно быть не раньше начала.',true);return;}act('off',Object.fromEntries(new FormData(f)));};
+$('offForm').onsubmit=e=>{e.preventDefault();const f=e.currentTarget;if(f.elements.to.value<f.elements.from.value){note(CrewI18n.t('Окончание периода должно быть не раньше начала.'),true);return;}act('off',Object.fromEntries(new FormData(f)));};
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{activeTab=b.dataset.tab;if(activeTab==='hours'&&!hoursFresh)load();for(const id of ['home','trips','hours','off','help'])$(id).hidden=id!==b.dataset.tab;document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));window.scrollTo(0,0);});
 $('homeLoadHours').onclick=()=>{homeHoursRequested=true;sequence++;load();};
 $('viewerClose').onclick=closeFileViewer;$('viewerPlus').onclick=()=>zoomViewer(1.25);$('viewerMinus').onclick=()=>zoomViewer(0.8);$('viewerFit').onclick=()=>zoomViewer('fit');
@@ -349,6 +469,7 @@ document.addEventListener('keydown',e=>{
 try{tg?.BackButton?.onClick(()=>{if(!$('fileViewer').hidden)closeFileViewer();});}catch(_){}
 setupHomeScreen();
 if(tg){tg.ready();tg.expand();}
-if(tg?.initData){const restored=restorePreview();if(restored)note('Показаны последние данные. Обновляю…');load();}else{note('Открой «Моё приложение» из личного чата с ботом. В обычном браузере данные работников недоступны.',true);$('refresh').disabled=true;}
+if(tg?.initData){const restored=restorePreview();if(restored)note(CrewI18n.t('Показаны последние данные. Обновляю…'));load();}else{note(CrewI18n.t('Открой «Моё приложение» из личного чата с ботом. В обычном браузере данные работников недоступны.'),true);$('refresh').disabled=true;}
 </script></body></html>
+
 

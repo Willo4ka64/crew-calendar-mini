@@ -1,11 +1,11 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
-const html=fs.readFileSync(process.argv[2]||'index.html','utf8');
+const html=fs.readFileSync(process.argv[2]||'mini-live.html','utf8');
 const source=html.slice(html.indexOf('let viewerEpoch='),html.indexOf('function render(){'));
 class Element{constructor(tag='div'){this.tag=tag;this.children=[];this.style={};this.hidden=false;this.clientWidth=640;}append(...nodes){this.children.push(...nodes);}replaceChildren(...nodes){this.children=nodes;}focus(){}querySelector(tag){return this.children.find(x=>x.tag===tag)||null;}}
 const elements=new Map(),get=id=>{if(!elements.has(id))elements.set(id,new Element());return elements.get(id);};get('fileViewer').hidden=true;
 const calls=[],created=[],revoked=[];
 const text=(tag,value)=>{const el=new Element(tag);el.textContent=value;return el;};
-const ctx={Uint8Array,Blob,TextDecoder,atob,Math,Boolean,Promise,document:{activeElement:new Element(),body:{style:{overflow:''}},createElement:tag=>new Element(tag)},window:{devicePixelRatio:1},location:{href:'https://example.test/'},URL:{createObjectURL:()=>{const id='blob:'+created.length;created.push(id);return id;},revokeObjectURL:url=>revoked.push(url)},tg:{BackButton:{show(){},hide(){}}},verified:true,busy:false,$:get,text,button:(label,fn)=>{const b=text('button',label);b.onclick=fn;return b;},note(){},act(){},api:async(method,data)=>{calls.push(data.index);return {file:{kind:'image',name:'schema.png',mimeType:'image/png',base64:'iVBORw0KGgo='}};}};
+const ctx={CrewI18n:{t:x=>x,html:x=>x},Uint8Array,Blob,TextDecoder,atob,Math,Boolean,Promise,document:{activeElement:new Element(),body:{style:{overflow:''}},createElement:tag=>new Element(tag)},window:{devicePixelRatio:1},location:{href:'https://example.test/'},URL:{createObjectURL:()=>{const id='blob:'+created.length;created.push(id);return id;},revokeObjectURL:url=>revoked.push(url)},tg:{BackButton:{show(){},hide(){}}},verified:true,busy:false,$:get,text,button:(label,fn)=>{const b=text('button',label);b.onclick=fn;return b;},note(){},act(){},api:async(method,data)=>{calls.push(data.index);return {file:{kind:'image',name:'schema.png',mimeType:'image/png',base64:'iVBORw0KGgo='}};}};
 vm.createContext(ctx);vm.runInContext(source,ctx);
 (async()=>{
  const trip={id:'trip',version:'v1',title:'Project',attachments:[{name:'one.png'},{name:'list.xlsx'},{name:'two.png'},{name:'three.png'},{name:'four.png'}]};
