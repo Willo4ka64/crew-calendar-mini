@@ -290,7 +290,7 @@ function renderTrips(target){
   if(!rows.length){list.append(text('p','Пока нет назначенных выездов.','empty'));return;}
   for(const trip of rows){const card=text('article','','card trip '+(trip.types.length===2?'both':trip.types[0]));
     card.append(text('span',statuses[trip.status]||statuses.pending,'badge '+trip.status),text('h3',trip.title),text('p',trip.when),text('p','📍 '+trip.location),text('p','🚐 '+trip.car),text('p','🎭 '+trip.types.map(t=>types[t]).join(' + ')));
-    const map=text('a','📍 Открыть адрес на карте');map.href='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(trip.location);map.target='_blank';map.rel='noopener noreferrer';card.append(map);
+    const map=text('a','📍 Открыть в Waze');map.href='https://waze.com/ul?q='+encodeURIComponent(trip.location)+'&navigate=yes&utm_source=crew_calendar';map.target='_blank';map.rel='noopener noreferrer';map.onclick=e=>{if(tg?.openLink){e.preventDefault();tg.openLink(map.href);}};card.append(map);
     if(trip.schemeStatus)card.append(text('p','Схемы: '+({ready:'🟢 Готовы',waiting:'🟡 Ожидаются',not_required:'Не нужны'}[trip.schemeStatus]||trip.schemeStatus),'muted'));
     if(trip.names.length)card.append(text('p','Команда: '+trip.names.join(', '),'muted'));
     if(trip.notes)card.append(text('p',trip.notes));if(trip.schemeList)card.append(text('p','Список: '+trip.schemeList));
