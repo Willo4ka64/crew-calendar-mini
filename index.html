@@ -6,6 +6,7 @@
 </style><style>
 .file-viewer{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;background:var(--bg);padding:calc(12px + env(safe-area-inset-top)) 12px calc(12px + env(safe-area-inset-bottom))}.viewer-header{display:flex;align-items:center;justify-content:space-between;gap:12px}.viewer-header h2{font-size:17px;overflow-wrap:anywhere;margin:0}.viewer-tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:10px 0}.viewer-tools button{min-height:40px;padding:8px 12px}.viewer-content{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;touch-action:auto;background:#263341;border-radius:12px;padding:8px}.viewer-content img{display:block;width:100%;height:auto;max-width:none;background:white}.viewer-content canvas{display:block;background:white}.viewer-content pre{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--card);color:var(--text);padding:12px;margin:0;font:14px/1.5 monospace}
 .gallery-file{background:var(--card);border-radius:12px;padding:12px;margin:0 0 16px}.gallery-file h3{font-size:14px;overflow-wrap:anywhere;margin:0}.gallery-file-content{overflow:auto;touch-action:auto}.gallery-file-content img{height:auto}.gallery-file:last-child{margin-bottom:0}
+.waze-link{display:inline-flex;align-items:center;gap:6px;min-height:46px;padding:10px 14px;margin:4px 0;border-radius:11px;font-weight:650;color:var(--text);text-decoration:none!important}.waze-link:visited,.waze-link:hover,.waze-link:active{color:var(--text);text-decoration:none!important}.waze-link:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 </style></head><body><main>
 <div class="top"><div><div class="eyebrow">LED · моя команда</div><h1 id="name">Моё приложение</h1></div><label class="language-picker" data-language-picker><span aria-hidden="true">🌐</span><select aria-label="Язык интерфейса"><option value="ru">RU · Русский</option><option value="en">EN · English</option></select></label><button id="refresh" class="secondary" aria-label="Обновить">↻</button></div>
 <p class="notice">Даты и время — по Израилю</p><button id="addHome" class="secondary" type="button">＋ Добавить на экран «Домой»</button><p id="homeStatus" class="notice" role="status" aria-live="polite"></p><div id="status" class="status" role="status" aria-live="polite"></div>
@@ -411,14 +412,15 @@ function renderTrips(target){
   if(!rows.length){list.append(text('p',CrewI18n.t('Пока нет назначенных выездов.'),'empty'));return;}
   for(const trip of rows){const card=text('article','','card trip '+(trip.types.length===2?'both':trip.types[0]));
     card.append(text('span',statuses[trip.status]||statuses.pending,'badge '+trip.status),text('h3',trip.title),text('p',CrewI18n.weekdays(trip.when)),text('p','📍 '+trip.location),text('p','🚐 '+trip.car),text('p','🎭 '+trip.types.map(t=>types[t]).join(' + ')));
-    const map=text('a',CrewI18n.t('📍 Открыть в Waze'));map.href='https://waze.com/ul?q='+encodeURIComponent(trip.location)+'&navigate=yes&utm_source=crew_calendar';map.target='_blank';map.rel='noopener noreferrer';map.onclick=e=>{if(tg?.openLink){e.preventDefault();tg.openLink(map.href);}};card.append(map);
+    const map=text('a',CrewI18n.t('📍 Открыть в Waze'),'waze-link secondary');map.href='https://waze.com/ul?q='+encodeURIComponent(trip.location)+'&navigate=yes&utm_source=crew_calendar';map.target='_blank';map.rel='noopener noreferrer';map.onclick=e=>{if(tg?.openLink){e.preventDefault();tg.openLink(map.href);}};card.append(map);
     if(trip.schemeStatus)card.append(text('p',CrewI18n.t('Схемы: ')+({ready:CrewI18n.t('🟢 Готовы'),waiting:CrewI18n.t('🟡 Ожидаются'),not_required:CrewI18n.t('Не нужны')}[trip.schemeStatus]||trip.schemeStatus),'muted'));
     if(trip.names.length)card.append(text('p',CrewI18n.t('Команда: ')+trip.names.join(', '),'muted'));
     if(trip.notes)card.append(text('p',trip.notes));if(trip.schemeList)card.append(text('p',CrewI18n.t('Список: ')+trip.schemeList));
     if(trip.reason)card.append(text('p',CrewI18n.t('Причина отказа: ')+trip.reason,'muted'));
-    if(trip.date>=state.today){const row=text('div','','row');row.append(button(CrewI18n.t('✅ Подтвердить'),()=>act('respond',{tripId:trip.id,version:trip.version,status:'accepted'}),''));
+    if(trip.date>=state.today){
+      if(trip.status!=='accepted'){const row=text('div','','row');row.append(button(CrewI18n.t('✅ Подтвердить'),()=>act('respond',{tripId:trip.id,version:trip.version,status:'accepted'}),''));card.append(row);}
       const detail=document.createElement('details');detail.append(text('summary',CrewI18n.t('❌ Не могу')));
-      const form=document.createElement('form'),label=text('label',CrewI18n.t('Причина отказа')),reason=document.createElement('textarea');reason.required=true;reason.maxLength=500;label.append(reason);form.append(label,text('button',CrewI18n.t('Сохранить отказ'),'danger'));form.onsubmit=e=>{e.preventDefault();act('respond',{tripId:trip.id,version:trip.version,status:'declined',reason:reason.value});};detail.append(form);card.append(row,detail);}
+      const form=document.createElement('form'),label=text('label',CrewI18n.t('Причина отказа')),reason=document.createElement('textarea');reason.required=true;reason.maxLength=500;label.append(reason);form.append(label,text('button',CrewI18n.t('Сохранить отказ'),'danger'));form.onsubmit=e=>{e.preventDefault();act('respond',{tripId:trip.id,version:trip.version,status:'declined',reason:reason.value});};detail.append(form);card.append(detail);}
     if(trip.attachments.length){
       card.append(text('p',CrewI18n.t('Файлы и схемы'),'muted'));
       const count=trip.attachments.filter(f=>!isExcelFile(f)).length;
@@ -472,6 +474,7 @@ setupHomeScreen();
 if(tg){tg.ready();tg.expand();}
 if(tg?.initData){const restored=restorePreview();if(restored)note(CrewI18n.t('Показаны последние данные. Обновляю…'));load();}else{note(CrewI18n.t('Открой «Моё приложение» из личного чата с ботом. В обычном браузере данные работников недоступны.'),true);$('refresh').disabled=true;}
 </script></body></html>
+
 
 
 
