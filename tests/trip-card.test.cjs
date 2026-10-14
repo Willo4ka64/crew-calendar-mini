@@ -1,7 +1,7 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const html=fs.readFileSync(process.argv[2]||'index.html','utf8');
-const source=html.slice(html.indexOf('function renderTrips(target)'),html.indexOf('function renderHours()'));
-class El{constructor(tag){this.tag=tag;this.children=[];}append(...nodes){this.children.push(...nodes)}replaceChildren(...nodes){this.children=nodes}}
+const source=html.slice(html.indexOf('  const jobCommentDrafts ='),html.indexOf('function renderHours()'));
+class El{constructor(tag){this.tag=tag;this.children=[];this.style={};}setAttribute(){}append(...nodes){this.children.push(...nodes)}replaceChildren(...nodes){this.children=nodes}}
 const elements=new Map(),get=id=>{if(!elements.has(id))elements.set(id,new El('div'));return elements.get(id)};
 const text=(tag,value,cls='')=>{const n=new El(tag);n.textContent=value;n.className=cls;return n};
 const state={today:'2026-10-13',trips:[]},calls=[],links=[];
