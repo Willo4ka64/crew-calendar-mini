@@ -36,8 +36,10 @@ function run(file,blocked=false){
  i.setLanguage('ru');assert.equal(label.textContent,'Часы работы');assert.equal(late.textContent,'Закрыть');assert.equal(time.textContent,'октябрь');assert.equal(data.textContent,'Сцена');assert.match(line.textContent,/Сцена$/);
  late.textContent='Имя пользователя';i.setLanguage('en');assert.equal(late.textContent,'Имя пользователя');
  const instant=new Element('p');instant.textContent=i.t('Закрыть');body.append(instant);window.print();assert(!/[\uE000\uE001]/.test(printed));assert.equal(instant.textContent,'Close');
+ if(i.localized){const releaseText=new Element('p');releaseText.textContent=i.localized('Новое обновление','New update');body.append(releaseText);i.flush();assert.equal(releaseText.textContent,'New update');i.setLanguage('ru');assert.equal(releaseText.textContent,'Новое обновление');i.setLanguage('en');assert.equal(releaseText.textContent,'New update');}
  if(!blocked)assert.equal(storage.get('crew.interface.language'),'en');
  assert(html.includes('data-language-picker'));assert(html.includes('name="endDate"'));assert(!html.includes('location.reload'));
  console.log('PASS:',file,blocked?'blocked storage':'storage enabled','— live switch, dynamic cards, month, title, form preservation, user data, dialogs and print');
 }
 for(const file of (process.argv.length>2?process.argv.slice(2):['index.html'])) {run(file);run(file,true);}
+
