@@ -557,7 +557,7 @@ function renderTrips(target){
     }
     mountJobComments(card,trip.id,
       async()=>{if(!verified)throw new Error(CrewI18n.t('Дождись обновления данных с сервера.'));return api('comments',{tripId:trip.id});},
-      async data=>{if(!verified)throw new Error(CrewI18n.t('Дождись обновления данных с сервера.'));const result=await api('addComment',{tripId:trip.id,text:data.text},data.requestId);return result.response;});
+      async data=>{if(!verified)throw new Error(CrewI18n.t('Дождись обновления данных с сервера.'));await api('addComment',{tripId:trip.id,text:data.text},data.requestId);return api('comments',{tripId:trip.id});});
     list.append(card);
   }
 }
