@@ -48,6 +48,7 @@ window.CrewI18n = (() => {
   const entries = [], keys = new Map(), dynamicKeys = new Map(), sources = new WeakMap(), bindings = new Set();
   const marker = id => '\uE000' + id + '\uE001';
   const tokenPattern = /\uE000(\d+)\uE001/g;
+  dictionary['Комментарий сохранён, но уведомления отправить не удалось.'] = 'Comment saved, but notifications could not be queued.';
   function t(source) {
     if (!Object.prototype.hasOwnProperty.call(dictionary, source)) return source;
     if (!keys.has(source)) { keys.set(source, entries.length); entries.push(() => language === 'en' ? dictionary[source] : source); }
@@ -492,12 +493,32 @@ function renderHome(){
   const off=$('homeOff');off.replaceChildren();if(state.off.length){const r=state.off[0];off.append(text('p',CrewI18n.t('Последняя заявка на выходной: ')+offDate(r.from)+' · '+(statuses[r.status]||r.status)));}
   renderTrips($('homeTrip'));
 }
-  // Fetch discussions only when expanded; keep drafts when cards are rebuilt.
+  // Visible discussions load automatically; share reads across Home and Jobs.
   const jobCommentDrafts = new Map();
+  const jobCommentReads = new Map();
+  const jobCommentReadQueue = [];
+  let jobCommentReadActive = 0;
+  function scheduleCommentRead(read) {
+    return new Promise((resolve,reject) => {
+      const start=()=>{jobCommentReadActive++;Promise.resolve().then(read).then(resolve,reject).finally(()=>{
+        jobCommentReadActive--;const next=jobCommentReadQueue.shift();if(next)next();
+      });};
+      if(jobCommentReadActive<3)start();else jobCommentReadQueue.push(start);
+    });
+  }
+  function cachedCommentRead(id,read,force) {
+    const cached=jobCommentReads.get(id);
+    if(!force&&cached&&Date.now()-cached.at<15000)return cached.promise;
+    const entry={at:Date.now(),promise:scheduleCommentRead(read)};
+    jobCommentReads.set(id,entry);
+    entry.promise.catch(()=>{if(jobCommentReads.get(id)===entry)jobCommentReads.delete(id);});
+    if(jobCommentReads.size>150)jobCommentReads.delete(jobCommentReads.keys().next().value);
+    return entry.promise;
+  }
   function mountJobComments(container, tripId, read, add) {
     const el = (tag, value) => { const node=document.createElement(tag); if(value!==undefined)node.textContent=value; return node; };
     const tr = value => CrewI18n.t(value);
-    const section=el('details'), summary=el('summary',tr('💬 Комментарии')), list=el('div'), status=el('p');
+    const section=el('section'), summary=el('h4',tr('💬 Комментарии')), list=el('div'), status=el('p');
     section.className='job-comments';status.setAttribute('role','status');
     const refresh=el('button',tr('Обновить комментарии'));refresh.type='button';refresh.className='secondary';
     const form=el('form'), label=el('label',tr('Добавить комментарий')), input=el('textarea'), send=el('button',tr('Отправить комментарий'));
@@ -505,7 +526,7 @@ function renderHome(){
     const draft=jobCommentDrafts.get(tripId)||{text:'',requestId:''};jobCommentDrafts.set(tripId,draft);input.value=draft.text;
     input.oninput=()=>{draft.text=input.value;draft.requestId='';};
     label.append(input);form.append(label,send);section.append(summary,list,status,refresh,form);container.append(section);
-    let waiting=false,loaded=false;
+    let waiting=false;
     const busy=value=>{waiting=value;refresh.disabled=value;send.disabled=value;input.disabled=value;};
     const display=result=>{
       list.replaceChildren();const comments=result.comments||[];
@@ -515,16 +536,23 @@ function renderHome(){
         const card=el('article'), meta=el('small',comment.author+' · '+new Date(comment.at).toLocaleString(CrewI18n.locale,{timeZone:'Asia/Jerusalem'}));
         const body=el('p',comment.text);body.style.whiteSpace='pre-wrap';body.style.overflowWrap='anywhere';card.append(meta,body);list.append(card);
       }
-      loaded=true;
     };
-    const reload=async()=>{if(waiting)return;busy(true);status.textContent=tr('Загружаю комментарии…');try{display(await read());status.textContent='';}catch(error){status.textContent=tr(error.message);}finally{busy(false);}};
-    refresh.onclick=reload;section.ontoggle=()=>{if(section.open&&!loaded)void reload();};
+    const reload=async(force=false)=>{if(waiting)return;busy(true);status.textContent=tr('Загружаю комментарии…');try{display(await cachedCommentRead(tripId,read,force));status.textContent='';}catch(error){status.textContent=tr(error.message);}finally{busy(false);}};
+    refresh.onclick=()=>reload(true);
+    status.textContent=tr('Загружаю комментарии…');
+    if(typeof IntersectionObserver==='function'){
+      const observer=new IntersectionObserver(entries=>{
+        if(entries.some(entry=>entry.isIntersecting)){observer.disconnect();void reload();}
+        else if(!section.isConnected)observer.disconnect();
+      },{rootMargin:'200px'});
+      observer.observe(section);
+    } else void reload();
     form.onsubmit=async event=>{
       event.preventDefault();if(waiting)return;
       const value=input.value.trim();if(!value)return;
       if(!draft.requestId)draft.requestId=Array.from(crypto.getRandomValues(new Uint8Array(16)),b=>b.toString(16).padStart(2,'0')).join('');
       busy(true);status.textContent=tr('Сохраняю…');
-      try{const result=await add({text:value,requestId:draft.requestId});draft.text='';draft.requestId='';input.value='';display(result);status.textContent=tr('Комментарий добавлен.');}
+      try{const result=await add({text:value,requestId:draft.requestId});draft.text='';draft.requestId='';input.value='';jobCommentReads.delete(tripId);display(result);status.textContent=tr(result.notificationWarning||'Комментарий добавлен.');}
       catch(error){status.textContent=tr(error.message);if(error.server)draft.requestId='';}
       finally{busy(false);}
     };
@@ -557,7 +585,7 @@ function renderTrips(target){
     }
     mountJobComments(card,trip.id,
       async()=>{if(!verified)throw new Error(CrewI18n.t('Дождись обновления данных с сервера.'));return api('comments',{tripId:trip.id});},
-      async data=>{if(!verified)throw new Error(CrewI18n.t('Дождись обновления данных с сервера.'));await api('addComment',{tripId:trip.id,text:data.text},data.requestId);return api('comments',{tripId:trip.id});});
+      async data=>{if(!verified)throw new Error(CrewI18n.t('Дождись обновления данных с сервера.'));const saved=await api('addComment',{tripId:trip.id,text:data.text},data.requestId);const result=await api('comments',{tripId:trip.id});if(saved.response?.notificationWarning)result.notificationWarning=saved.response.notificationWarning;return result;});
     list.append(card);
   }
 }
